@@ -1,0 +1,107 @@
+==========================================================
+  MINHAS REFEIÇÕES — como usar
+==========================================================
+
+Arquivos:
+  index.html ............ o app
+  manifest.json ......... configuração para instalar como app
+  sw.js ................. faz funcionar offline (PWA)
+  icon.svg .............. ícone do app
+  google-apps-script.gs . código do banco de dados (planilha)
+  COMO-USAR.txt ......... este arquivo
+
+
+----------------------------------------------------------
+1) REGISTRAR REFEIÇÕES (cálculo automático)
+----------------------------------------------------------
+- Toque em "＋ Adicionar refeição".
+- Escolha o tipo (café, almoço, lanche, jantar).
+- Busque o alimento (ex: "arroz") ou filtre por categoria.
+- Toque no alimento e ajuste a QUANTIDADE e a MEDIDA
+  (colher, fatia, unidade, concha, grama...).
+  As calorias são somadas automaticamente.
+- Junte vários alimentos e toque em "Salvar".
+
+O anel no topo mostra o total do dia x sua meta.
+Toque numa refeição da lista para editar ou excluir.
+Em ⚙️ Configurações você define a meta diária.
+
+
+----------------------------------------------------------
+2) CADASTRAR PRODUTO POR FOTO DA TABELA NUTRICIONAL
+----------------------------------------------------------
+Para itens de mercado (iogurte, biscoito, etc.):
+- Em "＋ Adicionar refeição" toque em
+  "📷 Cadastrar produto pela tabela nutricional".
+- Tire uma foto da tabela "Informação Nutricional".
+- O app LÊ a porção e as calorias automaticamente.
+- Confira/ajuste o nome, a porção e as calorias e salve.
+- O produto fica salvo em "Meus produtos" e aparece na
+  busca para você usar sempre que quiser.
+
+Dicas para a foto sair bem:
+- Boa luz, tabela reta e enquadrada, texto nítido.
+- A 1ª vez precisa de internet (baixa o leitor de texto).
+- Se a leitura falhar, é só digitar os valores na mão.
+
+
+----------------------------------------------------------
+3) INSTALAR COMO APP NO CELULAR
+----------------------------------------------------------
+Há dois caminhos:
+
+A) Modo simples (atalho):
+   Abra o index.html no navegador do celular e use o menu
+   "Adicionar à tela inicial". Vira um ícone na tela.
+
+B) Modo app completo (recomendado: abre em tela cheia,
+   funciona offline de verdade, atualiza sozinho):
+   Para isso o app precisa estar publicado num endereço
+   https. É grátis e rápido. Opção mais fácil:
+
+   GitHub Pages:
+   1. Crie conta em github.com (grátis).
+   2. Crie um repositório novo (ex: "refeicoes").
+   3. Envie os arquivos desta pasta para o repositório.
+   4. Em Settings > Pages, escolha a branch "main" e salve.
+   5. Em ~1 min surge um link https://seuusuario.github.io/refeicoes
+   6. Abra esse link no celular. O navegador vai oferecer
+      "Instalar app" (ou use "Adicionar à tela inicial").
+
+   * Posso publicar isso para você se quiser — é só pedir.
+
+
+----------------------------------------------------------
+4) SALVAR NA NUVEM (Google Planilhas) — opcional
+----------------------------------------------------------
+Guarda seus dados numa planilha de verdade (backup que
+nunca se perde, mesmo trocando de celular).
+
+ A. Acesse sheets.google.com e crie uma planilha vazia.
+ B. Menu: Extensões > Apps Script.
+ C. Apague o que houver e COLE todo o google-apps-script.gs.
+    Salve (disquete).
+ D. "Implantar" > "Nova implantação":
+    - Tipo: App da Web
+    - Executar como: Eu
+    - Quem pode acessar: Qualquer pessoa
+    - Implantar e autorizar (em "Avançado" > "Acessar...").
+ E. Copie a URL (termina em /exec).
+ F. No app: ⚙️ Configurações > cole a URL no campo
+    "Banco de dados" > "Salvar configurações".
+ G. Toque em "⬆️ Salvar na nuvem".
+    Depois disso tudo é salvo automaticamente.
+
+Em outro celular: instale o app, cole a mesma URL e use
+"⬇️ Restaurar da nuvem".
+
+A planilha terá as abas "Refeições" e "Total por dia".
+
+
+----------------------------------------------------------
+Observações
+----------------------------------------------------------
+- Sem a nuvem, os dados ficam só no navegador do aparelho.
+- As calorias da lista são valores médios de referência
+  (por 100 g) e podem variar por marca/preparo.
+- Backup em arquivo: ⚙️ Configurações > "Exportar backup".

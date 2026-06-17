@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#1d9e75">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Minhas Refeições">
+<title>Minhas Refeições</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon.svg">
+<link rel="icon" href="icon.svg">
+<style>
+  :root{
+    --bg:#f7f6f2; --card:#ffffff; --text:#1f2420; --muted:#6b726c; --line:#e9e7e0;
+    --green:#1d9e75; --green-d:#0f6e56; --green-l:#e1f5ee;
+    --amber:#ba7517; --amber-l:#faeeda;
+    --red:#e24b4a; --red-l:#fcebeb;
+    --shadow:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  }
+  @media (prefers-color-scheme: dark){
+    :root{ --bg:#16191a; --card:#1f2426; --text:#e8eae8; --muted:#9aa19c; --line:#2d3335;
+      --green-l:#0c2e26; --amber-l:#2e2410; --red-l:#2e1414; --shadow:0 1px 3px rgba(0,0,0,.4);}
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+  html,body{height:100%}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg);color:var(--text);line-height:1.45;
+    padding-bottom:env(safe-area-inset-bottom);-webkit-font-smoothing:antialiased}
+  .app{max-width:520px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
+
+  header{padding:calc(env(safe-area-inset-top) + 14px) 18px 14px;background:var(--green);color:#fff}
+  .h-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .h-top h1{font-size:19px;font-weight:600;letter-spacing:-.3px}
+  .h-top .hr{display:flex;gap:8px;align-items:center}
+  .cloud-dot{font-size:11px;background:rgba(255,255,255,.18);padding:6px 10px;border-radius:14px}
+  .gear{width:38px;height:38px;border:none;border-radius:50%;background:rgba(255,255,255,.18);
+    color:#fff;font-size:18px;display:grid;place-items:center;cursor:pointer}
+  .gear:active{transform:scale(.94)}
+  .datenav{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .datenav button{width:36px;height:36px;border:none;border-radius:10px;background:rgba(255,255,255,.18);
+    color:#fff;font-size:20px;cursor:pointer;display:grid;place-items:center}
+  .datenav button:active{transform:scale(.94)}
+  .dlabel{text-align:center;flex:1}
+  .dlabel .d1{font-size:15px;font-weight:600;text-transform:capitalize}
+  .dlabel .d2{font-size:12px;opacity:.85}
+  .dlabel small{display:block;font-size:11px;opacity:.85;margin-top:2px;cursor:pointer;text-decoration:underline}
+
+  .summary{display:flex;align-items:center;gap:18px;background:var(--card);margin:14px;padding:18px;
+    border-radius:18px;box-shadow:var(--shadow)}
+  .ring{position:relative;width:96px;height:96px;flex-shrink:0}
+  .ring svg{transform:rotate(-90deg)}
+  .ring .rc-val{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .ring .rc-val b{font-size:21px;font-weight:700;line-height:1}
+  .ring .rc-val span{font-size:10px;color:var(--muted);margin-top:2px}
+  .sumtxt{flex:1}
+  .sumtxt .big{font-size:15px;font-weight:600;margin-bottom:6px}
+  .sumtxt .row{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin:3px 0}
+  .sumtxt .row b{color:var(--text);font-weight:600}
+  .over{color:var(--red)!important}
+
+  .list{flex:1;padding:0 14px 120px}
+  .group{margin-bottom:18px}
+  .ghead{display:flex;align-items:center;gap:8px;margin:0 4px 8px;font-size:13px;font-weight:600;color:var(--muted)}
+  .ghead .gcal{margin-left:auto;font-size:12px;font-weight:600}
+  .meal{display:flex;align-items:center;gap:12px;background:var(--card);padding:12px;border-radius:14px;
+    margin-bottom:8px;box-shadow:var(--shadow)}
+  .meal .thumb{width:46px;height:46px;border-radius:11px;background:var(--green-l);flex-shrink:0;
+    display:grid;place-items:center;font-size:22px;overflow:hidden}
+  .meal .mi{flex:1;min-width:0}
+  .meal .mi .mn{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .meal .mi .mt{font-size:12px;color:var(--muted);margin-top:1px}
+  .meal .mc{font-size:14px;font-weight:700;color:var(--green-d);white-space:nowrap}
+  .empty{text-align:center;color:var(--muted);padding:48px 24px}
+  .empty .ico{font-size:46px;margin-bottom:10px}
+  .empty p{font-size:14px}
+
+  .quick{margin:0 4px 18px}
+  .quick .qh{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px}
+  .chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;-webkit-overflow-scrolling:touch}
+  .chip{flex-shrink:0;background:var(--card);border:1px solid var(--line);border-radius:20px;
+    padding:8px 14px;font-size:13px;cursor:pointer;white-space:nowrap}
+  .chip:active{transform:scale(.96)}
+  .chip b{color:var(--green-d)}
+
+  .fab{position:fixed;left:50%;transform:translateX(-50%);
+    bottom:calc(env(safe-area-inset-bottom) + 20px);
+    background:var(--green);color:#fff;border:none;border-radius:30px;
+    padding:15px 26px;font-size:16px;font-weight:600;cursor:pointer;
+    box-shadow:0 6px 20px rgba(29,158,117,.4);display:flex;align-items:center;gap:8px;z-index:40}
+  .fab:active{transform:translateX(-50%) scale(.96)}
+  .fab .pl{font-size:22px;line-height:1}
+
+  .scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:50;opacity:0;pointer-events:none;transition:opacity .22s}
+  .scrim.on{opacity:1;pointer-events:auto}
+  .sheet{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--card);
+    border-radius:22px 22px 0 0;padding:8px 18px calc(env(safe-area-inset-bottom) + 22px);
+    max-width:520px;margin:0 auto;transform:translateY(110%);transition:transform .26s cubic-bezier(.3,.8,.4,1);
+    max-height:92vh;overflow-y:auto}
+  .sheet.on{transform:translateY(0)}
+  .grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:6px auto 14px}
+  .sheet h2{font-size:18px;font-weight:600;margin-bottom:6px}
+
+  label.fl{display:block;font-size:13px;font-weight:600;color:var(--muted);margin:14px 0 6px}
+  input[type=text],input[type=number],input[type=search],select{width:100%;border:1px solid var(--line);background:var(--bg);
+    color:var(--text);border-radius:12px;padding:13px 14px;font-size:16px;font-family:inherit;outline:none}
+  input:focus,select:focus{border-color:var(--green)}
+  .types{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+  .types .tb{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:11px;
+    font-size:14px;cursor:pointer;display:flex;align-items:center;gap:8px;color:var(--text)}
+  .types .tb.sel{border-color:var(--green);background:var(--green-l);color:var(--green-d);font-weight:600}
+  .types .tb .em{font-size:18px}
+
+  .searchwrap{position:relative;margin-top:6px}
+  .catrow{display:flex;gap:6px;overflow-x:auto;margin:10px 0 4px;padding-bottom:4px}
+  .catrow .ct{flex-shrink:0;border:1px solid var(--line);background:var(--bg);border-radius:16px;
+    padding:6px 12px;font-size:12px;cursor:pointer;white-space:nowrap;color:var(--muted)}
+  .catrow .ct.sel{background:var(--green-l);border-color:var(--green);color:var(--green-d);font-weight:600}
+  .results{max-height:34vh;overflow-y:auto;margin-top:8px;border:1px solid var(--line);border-radius:12px}
+  .results:empty{display:none}
+  .ritem{display:flex;align-items:center;gap:10px;padding:11px 13px;border-bottom:1px solid var(--line);cursor:pointer}
+  .ritem:last-child{border:none}
+  .ritem:active{background:var(--green-l)}
+  .ritem .rn{flex:1;font-size:14px}
+  .ritem .rk{font-size:12px;color:var(--muted)}
+  .ritem .rp{color:var(--green);font-size:20px;font-weight:700}
+
+  .cart{margin-top:14px}
+  .cart .ch{font-size:13px;font-weight:600;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between}
+  .citem{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px}
+  .citem .c1{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .citem .cnm{font-size:14px;font-weight:600;flex:1}
+  .citem .ckc{font-size:14px;font-weight:700;color:var(--green-d);white-space:nowrap}
+  .citem .cx{border:none;background:none;color:var(--red);font-size:18px;cursor:pointer;padding:0 2px}
+  .citem .c2{display:flex;gap:8px;margin-top:8px;align-items:center}
+  .citem .c2 select{flex:1;padding:9px 10px;font-size:14px}
+  .citem .c2 input{width:74px;padding:9px;font-size:14px;text-align:center}
+  .citem .c2 .qm{font-size:12px;color:var(--muted)}
+
+  .save{width:100%;border:none;background:var(--green);color:#fff;font-size:16px;font-weight:600;
+    border-radius:14px;padding:15px;margin-top:18px;cursor:pointer}
+  .save:disabled{opacity:.5}
+  .save:active{transform:scale(.99)}
+  .del{width:100%;border:none;background:var(--red-l);color:var(--red);font-size:15px;font-weight:600;
+    border-radius:14px;padding:13px;margin-top:10px;cursor:pointer}
+  .linkbtn{background:none;border:none;color:var(--green-d);font-size:13px;text-decoration:underline;cursor:pointer;margin-top:12px}
+
+  .setrow{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line);gap:10px}
+  .setrow:last-of-type{border:none}
+  .setrow .sk{font-size:14px}
+  .setrow input[type=number]{width:90px;text-align:center}
+  .setblock{padding:14px 0;border-bottom:1px solid var(--line)}
+  .setblock .sk{font-size:14px;font-weight:600;margin-bottom:4px;display:flex;align-items:center;gap:6px}
+  .setblock .sd{font-size:12px;color:var(--muted);margin-bottom:10px}
+  .row2{display:flex;gap:8px}
+  .row2 button{flex:1;border:1px solid var(--line);background:var(--bg);color:var(--text);border-radius:12px;
+    padding:11px;font-size:13px;font-weight:600;cursor:pointer}
+  .hint{font-size:12px;color:var(--muted);margin-top:14px;line-height:1.5}
+  .ghost{background:none;border:none;color:var(--muted);font-size:13px;text-decoration:underline;cursor:pointer;margin-top:14px;display:block}
+  .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 90px);transform:translateX(-50%) translateY(20px);
+    background:var(--text);color:var(--bg);padding:11px 20px;border-radius:24px;font-size:14px;font-weight:500;
+    opacity:0;pointer-events:none;transition:.25s;z-index:80;max-width:90%;text-align:center}
+  .toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="h-top">
+      <h1>Minhas Refeições</h1>
+      <div class="hr">
+        <button class="gear" id="btnInstall" aria-label="Instalar app" style="display:none">⬇️</button>
+        <span class="cloud-dot" id="cloudDot">offline</span>
+        <button class="gear" id="btnSet" aria-label="Configurações">⚙️</button>
+      </div>
+    </div>
+    <div class="datenav">
+      <button id="prevD" aria-label="Dia anterior">‹</button>
+      <div class="dlabel">
+        <div class="d1" id="dDay">Hoje</div>
+        <div class="d2" id="dFull"></div>
+        <small id="goToday">ir para hoje</small>
+      </div>
+      <button id="nextD" aria-label="Próximo dia">›</button>
+    </div>
+  </header>
+
+  <div class="summary">
+    <div class="ring">
+      <svg width="96" height="96" viewBox="0 0 96 96">
+        <circle cx="48" cy="48" r="42" fill="none" stroke="var(--line)" stroke-width="9"/>
+        <circle id="ringFg" cx="48" cy="48" r="42" fill="none" stroke="var(--green)" stroke-width="9"
+          stroke-linecap="round" stroke-dasharray="264" stroke-dashoffset="264"/>
+      </svg>
+      <div class="rc-val"><b id="ringNum">0</b><span>kcal</span></div>
+    </div>
+    <div class="sumtxt">
+      <div class="big" id="sumStatus">Vamos registrar?</div>
+      <div class="row"><span>Consumido</span><b id="sConsumed">0 kcal</b></div>
+      <div class="row"><span>Meta diária</span><b id="sGoal">2000 kcal</b></div>
+      <div class="row"><span id="sRestLbl">Restante</span><b id="sRest">2000 kcal</b></div>
+    </div>
+  </div>
+
+  <div class="list" id="list"></div>
+</div>
+
+<button class="fab" id="fab"><span class="pl">＋</span> Adicionar refeição</button>
+
+<!-- Add/Edit sheet -->
+<div class="scrim" id="scrim"></div>
+<div class="sheet" id="sheet">
+  <div class="grab"></div>
+  <h2 id="sheetTitle">Nova refeição</h2>
+
+  <label class="fl">Tipo de refeição</label>
+  <div class="types" id="types"></div>
+
+  <label class="fl">Horário</label>
+  <input type="text" id="fTime" placeholder="00:00">
+
+  <div id="searchArea">
+    <label class="fl">Buscar alimento</label>
+    <div class="searchwrap">
+      <input type="search" id="fSearch" placeholder="Ex: arroz, frango, banana..." autocomplete="off">
+    </div>
+    <div class="catrow" id="catRow"></div>
+    <div class="results" id="results"></div>
+    <button class="linkbtn" id="ocrBtn">📷 Cadastrar produto pela tabela nutricional</button><br>
+    <button class="linkbtn" id="manualBtn">+ Adicionar alimento sabendo as calorias</button>
+  </div>
+
+  <div class="cart" id="cart"></div>
+
+  <button class="save" id="saveBtn">Salvar refeição</button>
+  <button class="del" id="delBtn" style="display:none">Excluir esta refeição</button>
+</div>
+
+<!-- Settings sheet -->
+<div class="scrim" id="scrim2"></div>
+<div class="sheet" id="sheet2">
+  <div class="grab"></div>
+  <h2>Configurações</h2>
+
+  <div class="setrow">
+    <span class="sk">Meta de calorias por dia</span>
+    <div><input type="number" id="setGoal" inputmode="numeric" min="0"> <span style="font-size:13px;color:var(--muted)">kcal</span></div>
+  </div>
+
+  <div class="setblock">
+    <div class="sk">☁️ Banco de dados (Google Planilhas)</div>
+    <div class="sd">Cole aqui a URL do seu app da web (veja o arquivo COMO-USAR). Seus dados serão salvos automaticamente em uma planilha.</div>
+    <input type="text" id="setUrl" placeholder="https://script.google.com/macros/s/.../exec" autocomplete="off">
+    <div class="row2" style="margin-top:10px">
+      <button id="syncUpBtn">⬆️ Salvar na nuvem</button>
+      <button id="syncDownBtn">⬇️ Restaurar da nuvem</button>
+    </div>
+    <div class="sd" id="syncStatus" style="margin-top:10px;margin-bottom:0"></div>
+  </div>
+
+  <button class="save" id="saveSet">Salvar configurações</button>
+  <p class="hint">💡 Para instalar como app: abra o menu do navegador no celular e toque em <b>"Adicionar à tela inicial"</b>.</p>
+  <button class="ghost" id="exportBtn">📁 Exportar backup (arquivo)</button>
+  <button class="ghost" id="clearBtn" style="color:var(--red)">Apagar todos os dados deste aparelho</button>
+</div>
+
+<!-- Product / OCR sheet -->
+<div class="scrim" id="scrim3"></div>
+<div class="sheet" id="sheet3">
+  <div class="grab"></div>
+  <h2>📷 Cadastrar produto</h2>
+  <p class="sd" style="font-size:12px;color:var(--muted);margin-bottom:4px">Tire uma foto da tabela nutricional. O app lê a porção e as calorias e calcula tudo. Você confere antes de salvar.</p>
+
+  <button class="save" id="ocrTake" style="margin-top:12px">📸 Tirar / escolher foto da tabela</button>
+  <input type="file" id="ocrPhoto" accept="image/*" capture="environment" style="display:none">
+  <img id="ocrPrev" style="width:100%;max-height:200px;object-fit:contain;border-radius:12px;margin-top:12px;display:none">
+  <div class="sd" id="ocrStatus" style="font-size:13px;color:var(--muted);margin-top:10px;min-height:18px"></div>
+
+  <div id="ocrForm" style="display:none">
+    <label class="fl">Nome do produto</label>
+    <input type="text" id="ocrName" placeholder="Ex: Iogurte da marca X" autocomplete="off">
+    <div style="display:flex;gap:10px">
+      <div style="flex:1"><label class="fl">Porção (g ou ml)</label><input type="number" id="ocrGrams" inputmode="decimal" placeholder="Ex: 170"></div>
+      <div style="flex:1"><label class="fl">Calorias da porção</label><input type="number" id="ocrKcal" inputmode="decimal" placeholder="Ex: 110"></div>
+    </div>
+    <div class="sd" id="ocrPer100" style="font-size:13px;color:var(--green-d);margin-top:10px;font-weight:600"></div>
+    <button class="save" id="ocrSave">Salvar produto</button>
+  </div>
+  <button class="linkbtn" id="ocrManual" style="margin-top:14px">Preencher manualmente sem foto</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ BASE DE ALIMENTOS (kcal por 100 g) ============ */
+/* m = medidas caseiras [rótulo, gramas]. O app sempre adiciona "100 g" e "1 g". */
+const FOODS=[
+ // Pães & cereais
+ {n:'Pão francês',k:300,c:'Pães',m:[['unidade',50]]},
+ {n:'Pão de forma',k:253,c:'Pães',m:[['fatia',25]]},
+ {n:'Pão integral',k:246,c:'Pães',m:[['fatia',25]]},
+ {n:'Pão de queijo',k:330,c:'Pães',m:[['unidade',20]]},
+ {n:'Pão de hambúrguer',k:270,c:'Pães',m:[['unidade',50]]},
+ {n:'Tapioca (goma)',k:240,c:'Pães',m:[['colher de sopa',20]]},
+ {n:'Cuscuz de milho',k:113,c:'Pães',m:[['fatia',80]]},
+ {n:'Torrada',k:380,c:'Pães',m:[['unidade',8]]},
+ {n:'Aveia em flocos',k:394,c:'Cereais',m:[['colher de sopa',15]]},
+ {n:'Granola',k:471,c:'Cereais',m:[['colher de sopa',15]]},
+ {n:'Sucrilhos / cereal matinal',k:375,c:'Cereais',m:[['xícara',30]]},
+ {n:'Farinha de aveia',k:389,c:'Cereais',m:[['colher de sopa',12]]},
+ // Arroz, massas e acompanhamentos
+ {n:'Arroz branco cozido',k:128,c:'Acompanhamentos',m:[['escumadeira',45],['colher de sopa',25]]},
+ {n:'Arroz integral cozido',k:124,c:'Acompanhamentos',m:[['escumadeira',45],['colher de sopa',25]]},
+ {n:'Macarrão cozido',k:158,c:'Massas',m:[['pegador',80]]},
+ {n:'Macarrão instantâneo (miojo)',k:137,c:'Massas',m:[['pacote preparado',200]]},
+ {n:'Lasanha à bolonhesa',k:165,c:'Massas',m:[['fatia',250]]},
+ {n:'Nhoque cozido',k:160,c:'Massas',m:[['porção',150]]},
+ {n:'Purê de batata',k:110,c:'Acompanhamentos',m:[['colher de sopa',40]]},
+ {n:'Batata cozida',k:52,c:'Acompanhamentos',m:[['unidade média',120]]},
+ {n:'Batata frita',k:312,c:'Acompanhamentos',m:[['porção',100]]},
+ {n:'Mandioca cozida',k:125,c:'Acompanhamentos',m:[['pedaço',80]]},
+ {n:'Mandioca frita',k:330,c:'Acompanhamentos',m:[['porção',100]]},
+ {n:'Batata doce cozida',k:77,c:'Acompanhamentos',m:[['unidade média',130]]},
+ {n:'Farofa pronta',k:410,c:'Acompanhamentos',m:[['colher de sopa',20]]},
+ {n:'Polenta',k:100,c:'Acompanhamentos',m:[['fatia',100]]},
+ // Carnes
+ {n:'Patinho bovino grelhado',k:219,c:'Carnes',m:[['bife',100]]},
+ {n:'Alcatra grelhada',k:241,c:'Carnes',m:[['bife',100]]},
+ {n:'Picanha grelhada',k:290,c:'Carnes',m:[['fatia',100]]},
+ {n:'Carne moída refogada',k:212,c:'Carnes',m:[['colher de sopa',25]]},
+ {n:'Costela bovina assada',k:373,c:'Carnes',m:[['porção',120]]},
+ {n:'Bife à parmegiana',k:240,c:'Carnes',m:[['porção',200]]},
+ {n:'Lombo de porco assado',k:210,c:'Carnes',m:[['fatia',100]]},
+ {n:'Pernil assado',k:262,c:'Carnes',m:[['fatia',100]]},
+ {n:'Costelinha de porco',k:290,c:'Carnes',m:[['porção',120]]},
+ {n:'Linguiça toscana',k:296,c:'Carnes',m:[['gomo',60]]},
+ {n:'Bacon frito',k:541,c:'Carnes',m:[['fatia',8]]},
+ // Aves
+ {n:'Peito de frango grelhado',k:159,c:'Aves',m:[['filé',100]]},
+ {n:'Coxa de frango assada',k:215,c:'Aves',m:[['unidade',90]]},
+ {n:'Sobrecoxa assada',k:230,c:'Aves',m:[['unidade',100]]},
+ {n:'Frango à passarinho frito',k:280,c:'Aves',m:[['porção',120]]},
+ {n:'Frango desfiado',k:165,c:'Aves',m:[['colher de sopa',25]]},
+ {n:'Peito de peru (fatiado)',k:100,c:'Aves',m:[['fatia',15]]},
+ {n:'Strogonoff de frango',k:165,c:'Aves',m:[['concha',120]]},
+ // Peixes & frutos do mar
+ {n:'Tilápia grelhada',k:96,c:'Peixes',m:[['filé',100]]},
+ {n:'Salmão grelhado',k:208,c:'Peixes',m:[['posta',100]]},
+ {n:'Sardinha',k:208,c:'Peixes',m:[['unidade',40]]},
+ {n:'Atum em água (lata)',k:116,c:'Peixes',m:[['lata',120]]},
+ {n:'Bacalhau cozido',k:136,c:'Peixes',m:[['porção',100]]},
+ {n:'Camarão cozido',k:90,c:'Peixes',m:[['porção',100]]},
+ {n:'Sushi (unidade)',k:150,c:'Peixes',m:[['unidade',30]]},
+ // Ovos
+ {n:'Ovo cozido',k:146,c:'Ovos',m:[['unidade',50]]},
+ {n:'Ovo frito',k:196,c:'Ovos',m:[['unidade',55]]},
+ {n:'Omelete',k:154,c:'Ovos',m:[['unidade (2 ovos)',120]]},
+ {n:'Ovo mexido',k:166,c:'Ovos',m:[['porção (2 ovos)',120]]},
+ {n:'Clara de ovo cozida',k:52,c:'Ovos',m:[['unidade',33]]},
+ // Laticínios
+ {n:'Leite integral',k:61,c:'Laticínios',m:[['copo',200],['xícara',150]]},
+ {n:'Leite desnatado',k:35,c:'Laticínios',m:[['copo',200]]},
+ {n:'Iogurte natural',k:51,c:'Laticínios',m:[['pote',170]]},
+ {n:'Iogurte grego',k:97,c:'Laticínios',m:[['pote',100]]},
+ {n:'Iogurte desnatado',k:41,c:'Laticínios',m:[['pote',170]]},
+ {n:'Queijo mussarela',k:280,c:'Laticínios',m:[['fatia',20]]},
+ {n:'Queijo prato',k:360,c:'Laticínios',m:[['fatia',20]]},
+ {n:'Queijo minas frescal',k:264,c:'Laticínios',m:[['fatia',30]]},
+ {n:'Queijo parmesão ralado',k:453,c:'Laticínios',m:[['colher de sopa',10]]},
+ {n:'Requeijão cremoso',k:257,c:'Laticínios',m:[['colher de sopa',20]]},
+ {n:'Queijo cottage',k:98,c:'Laticínios',m:[['colher de sopa',30]]},
+ {n:'Cream cheese',k:250,c:'Laticínios',m:[['colher de sopa',20]]},
+ {n:'Manteiga',k:717,c:'Laticínios',m:[['ponta de faca',5],['colher de chá',5]]},
+ {n:'Margarina',k:596,c:'Laticínios',m:[['ponta de faca',5]]},
+ {n:'Leite condensado',k:321,c:'Laticínios',m:[['colher de sopa',20]]},
+ {n:'Creme de leite',k:217,c:'Laticínios',m:[['colher de sopa',15]]},
+ // Leguminosas
+ {n:'Feijão carioca cozido',k:76,c:'Leguminosas',m:[['concha',100],['colher de sopa',25]]},
+ {n:'Feijão preto cozido',k:77,c:'Leguminosas',m:[['concha',100]]},
+ {n:'Feijoada',k:117,c:'Leguminosas',m:[['concha',150]]},
+ {n:'Lentilha cozida',k:116,c:'Leguminosas',m:[['concha',100]]},
+ {n:'Grão-de-bico cozido',k:164,c:'Leguminosas',m:[['concha',100]]},
+ {n:'Ervilha',k:81,c:'Leguminosas',m:[['colher de sopa',20]]},
+ {n:'Soja cozida',k:141,c:'Leguminosas',m:[['concha',100]]},
+ // Frutas
+ {n:'Banana',k:89,c:'Frutas',m:[['unidade',100]]},
+ {n:'Maçã',k:52,c:'Frutas',m:[['unidade',130]]},
+ {n:'Laranja',k:47,c:'Frutas',m:[['unidade',180]]},
+ {n:'Mamão',k:43,c:'Frutas',m:[['fatia',150]]},
+ {n:'Manga',k:60,c:'Frutas',m:[['unidade',200]]},
+ {n:'Melancia',k:30,c:'Frutas',m:[['fatia',200]]},
+ {n:'Melão',k:34,c:'Frutas',m:[['fatia',150]]},
+ {n:'Uva',k:69,c:'Frutas',m:[['cacho pequeno',100]]},
+ {n:'Abacaxi',k:50,c:'Frutas',m:[['fatia',100]]},
+ {n:'Morango',k:32,c:'Frutas',m:[['unidade',12]]},
+ {n:'Abacate',k:96,c:'Frutas',m:[['metade',100]]},
+ {n:'Pera',k:57,c:'Frutas',m:[['unidade',150]]},
+ {n:'Kiwi',k:61,c:'Frutas',m:[['unidade',75]]},
+ {n:'Goiaba',k:54,c:'Frutas',m:[['unidade',150]]},
+ {n:'Tangerina',k:53,c:'Frutas',m:[['unidade',120]]},
+ {n:'Açaí (polpa pura)',k:58,c:'Frutas',m:[['porção',100]]},
+ {n:'Maracujá (polpa)',k:68,c:'Frutas',m:[['unidade',60]]},
+ {n:'Coco fresco',k:354,c:'Frutas',m:[['pedaço',30]]},
+ {n:'Ameixa',k:46,c:'Frutas',m:[['unidade',60]]},
+ // Legumes & verduras
+ {n:'Alface',k:15,c:'Verduras',m:[['folha',10]]},
+ {n:'Tomate',k:18,c:'Verduras',m:[['unidade',100]]},
+ {n:'Cenoura',k:41,c:'Verduras',m:[['unidade',80]]},
+ {n:'Brócolis cozido',k:34,c:'Verduras',m:[['colher de sopa',25]]},
+ {n:'Couve refogada',k:90,c:'Verduras',m:[['colher de sopa',20]]},
+ {n:'Abobrinha refogada',k:30,c:'Verduras',m:[['colher de sopa',25]]},
+ {n:'Beterraba',k:43,c:'Verduras',m:[['colher de sopa',25]]},
+ {n:'Pepino',k:15,c:'Verduras',m:[['unidade',150]]},
+ {n:'Repolho',k:25,c:'Verduras',m:[['xícara',70]]},
+ {n:'Espinafre cozido',k:23,c:'Verduras',m:[['colher de sopa',25]]},
+ {n:'Cebola',k:40,c:'Verduras',m:[['colher de sopa',15]]},
+ {n:'Pimentão',k:20,c:'Verduras',m:[['unidade',100]]},
+ {n:'Abóbora cozida',k:26,c:'Verduras',m:[['colher de sopa',30]]},
+ {n:'Vagem cozida',k:31,c:'Verduras',m:[['colher de sopa',25]]},
+ {n:'Berinjela',k:25,c:'Verduras',m:[['fatia',30]]},
+ {n:'Milho verde cozido',k:96,c:'Verduras',m:[['espiga',100],['colher de sopa',20]]},
+ // Bebidas
+ {n:'Café sem açúcar',k:2,c:'Bebidas',m:[['xícara',50]]},
+ {n:'Café com leite',k:40,c:'Bebidas',m:[['xícara',150]]},
+ {n:'Suco de laranja natural',k:45,c:'Bebidas',m:[['copo',200]]},
+ {n:'Suco de uva integral',k:60,c:'Bebidas',m:[['copo',200]]},
+ {n:'Refrigerante',k:42,c:'Bebidas',m:[['lata',350],['copo',200]]},
+ {n:'Refrigerante zero',k:0,c:'Bebidas',m:[['lata',350]]},
+ {n:'Cerveja',k:43,c:'Bebidas',m:[['lata',350]]},
+ {n:'Vinho tinto',k:85,c:'Bebidas',m:[['taça',120]]},
+ {n:'Água de coco',k:19,c:'Bebidas',m:[['copo',200]]},
+ {n:'Achocolatado pronto',k:80,c:'Bebidas',m:[['copo',200]]},
+ {n:'Vitamina de banana',k:90,c:'Bebidas',m:[['copo',300]]},
+ {n:'Chá sem açúcar',k:1,c:'Bebidas',m:[['xícara',200]]},
+ {n:'Energético',k:45,c:'Bebidas',m:[['lata',250]]},
+ // Doces & sobremesas
+ {n:'Chocolate ao leite',k:535,c:'Doces',m:[['quadradinho',6],['barra pequena',25]]},
+ {n:'Brigadeiro',k:400,c:'Doces',m:[['unidade',20]]},
+ {n:'Beijinho',k:380,c:'Doces',m:[['unidade',20]]},
+ {n:'Sorvete de massa',k:207,c:'Doces',m:[['bola',60]]},
+ {n:'Pudim',k:150,c:'Doces',m:[['fatia',120]]},
+ {n:'Bolo de chocolate',k:370,c:'Doces',m:[['fatia',80]]},
+ {n:'Bolo de cenoura',k:350,c:'Doces',m:[['fatia',80]]},
+ {n:'Mousse de chocolate',k:220,c:'Doces',m:[['taça',100]]},
+ {n:'Açúcar',k:387,c:'Doces',m:[['colher de chá',5],['colher de sopa',12]]},
+ {n:'Mel',k:304,c:'Doces',m:[['colher de sopa',20]]},
+ {n:'Doce de leite',k:315,c:'Doces',m:[['colher de sopa',20]]},
+ {n:'Paçoca',k:470,c:'Doces',m:[['unidade',20]]},
+ {n:'Gelatina',k:62,c:'Doces',m:[['taça',120]]},
+ {n:'Biscoito recheado',k:480,c:'Doces',m:[['unidade',12]]},
+ {n:'Biscoito de maizena',k:440,c:'Doces',m:[['unidade',6]]},
+ {n:'Biscoito água e sal',k:432,c:'Doces',m:[['unidade',6]]},
+ // Salgados & lanches
+ {n:'Coxinha',k:270,c:'Lanches',m:[['unidade',80]]},
+ {n:'Pastel',k:290,c:'Lanches',m:[['unidade',90]]},
+ {n:'Esfiha',k:230,c:'Lanches',m:[['unidade',80]]},
+ {n:'Pizza de mussarela',k:266,c:'Lanches',m:[['fatia',100]]},
+ {n:'Hambúrguer (sanduíche)',k:250,c:'Lanches',m:[['unidade',150]]},
+ {n:'X-burguer',k:300,c:'Lanches',m:[['unidade',180]]},
+ {n:'Cachorro-quente',k:247,c:'Lanches',m:[['unidade',150]]},
+ {n:'Misto quente',k:280,c:'Lanches',m:[['unidade',100]]},
+ {n:'Nuggets',k:296,c:'Lanches',m:[['unidade',16]]},
+ {n:'Batata frita (fast food)',k:312,c:'Lanches',m:[['porção média',100]]},
+ {n:'Salgadinho de pacote',k:540,c:'Lanches',m:[['pacote pequeno',50]]},
+ {n:'Pipoca',k:387,c:'Lanches',m:[['xícara',15]]},
+ // Óleos, gorduras e oleaginosas
+ {n:'Azeite de oliva',k:884,c:'Óleos',m:[['colher de sopa',8],['fio',4]]},
+ {n:'Óleo de soja',k:884,c:'Óleos',m:[['colher de sopa',8]]},
+ {n:'Óleo de coco',k:862,c:'Óleos',m:[['colher de sopa',8]]},
+ {n:'Amendoim',k:567,c:'Oleaginosas',m:[['punhado',30]]},
+ {n:'Castanha de caju',k:553,c:'Oleaginosas',m:[['unidade',2]]},
+ {n:'Castanha do Pará',k:656,c:'Oleaginosas',m:[['unidade',4]]},
+ {n:'Nozes',k:654,c:'Oleaginosas',m:[['unidade',5]]},
+ {n:'Amêndoas',k:579,c:'Oleaginosas',m:[['unidade',1.2]]},
+ {n:'Pasta de amendoim',k:588,c:'Oleaginosas',m:[['colher de sopa',15]]},
+ // Molhos & temperos
+ {n:'Maionese',k:680,c:'Molhos',m:[['colher de sopa',15]]},
+ {n:'Ketchup',k:110,c:'Molhos',m:[['colher de sopa',15]]},
+ {n:'Mostarda',k:66,c:'Molhos',m:[['colher de sopa',15]]},
+ {n:'Molho shoyu',k:60,c:'Molhos',m:[['colher de sopa',15]]},
+ {n:'Molho de tomate',k:38,c:'Molhos',m:[['concha',60]]},
+ {n:'Molho barbecue',k:170,c:'Molhos',m:[['colher de sopa',17]]},
+ {n:'Vinagrete',k:50,c:'Molhos',m:[['colher de sopa',20]]},
+ // Suplementos
+ {n:'Whey protein (pó)',k:380,c:'Suplementos',m:[['scoop',30]]},
+ {n:'Barra de proteína',k:350,c:'Suplementos',m:[['unidade',45]]},
+ {n:'Barra de cereal',k:380,c:'Suplementos',m:[['unidade',25]]},
+];
+
+const TYPES=[
+  {id:'cafe',label:'Café da manhã',em:'🍳'},
+  {id:'almoco',label:'Almoço',em:'🍽️'},
+  {id:'lanche',label:'Lanche',em:'🍎'},
+  {id:'jantar',label:'Jantar',em:'🌙'},
+];
+const DAYS=['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
+const MON=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+
+const store={
+  meals(){ try{return JSON.parse(localStorage.getItem('meals')||'[]')}catch(e){return []} },
+  saveMeals(m){ localStorage.setItem('meals',JSON.stringify(m)); scheduleSync(); },
+  goal(){ return parseInt(localStorage.getItem('goal')||'2000',10) },
+  saveGoal(g){ localStorage.setItem('goal',String(g)); scheduleSync(); },
+  url(){ return localStorage.getItem('cloudUrl')||'' },
+  saveUrl(u){ localStorage.setItem('cloudUrl',u||'') },
+  customFoods(){ try{return JSON.parse(localStorage.getItem('customFoods')||'[]')}catch(e){return []} },
+  saveCustom(a){ localStorage.setItem('customFoods',JSON.stringify(a)); scheduleSync(); },
+};
+function allFoods(){ return FOODS.concat(store.customFoods()); }
+
+let curDate=ymd(new Date());
+let selType='almoco';
+let cart=[];          // itens pendentes/edição
+let editId=null;      // id do item sendo editado (modo edição)
+let curCat='';        // filtro de categoria
+
+function ymd(d){ return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0') }
+function parseYmd(s){ const[y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d) }
+function nowTime(){ const d=new Date(); return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0') }
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7) }
+function norm(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'') }
+function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])) }
+
+function shiftDay(n){ const d=parseYmd(curDate); d.setDate(d.getDate()+n); curDate=ymd(d); render() }
+
+/* ---- medidas de um alimento (com 100 g e 1 g sempre) ---- */
+function measuresOf(food){
+  const base=(food.m||[]).map(x=>({l:x[0],g:x[1]}));
+  base.push({l:'100 g',g:100});
+  base.push({l:'grama (g)',g:1});
+  return base;
+}
+
+/* ============ RENDER PRINCIPAL ============ */
+function renderHeader(){
+  const d=parseYmd(curDate), today=ymd(new Date());
+  const yest=ymd(new Date(Date.now()-864e5)), tom=ymd(new Date(Date.now()+864e5));
+  let lbl=DAYS[d.getDay()];
+  if(curDate===today)lbl='Hoje'; else if(curDate===yest)lbl='Ontem'; else if(curDate===tom)lbl='Amanhã';
+  document.getElementById('dDay').textContent=lbl;
+  document.getElementById('dFull').textContent=DAYS[d.getDay()]+', '+d.getDate()+' de '+MON[d.getMonth()]+' '+d.getFullYear();
+  document.getElementById('goToday').style.display = curDate===today?'none':'block';
+}
+
+function dayMeals(){ return store.meals().filter(m=>m.date===curDate).sort((a,b)=>(a.time||'').localeCompare(b.time||'')) }
+
+function renderSummary(meals){
+  const total=Math.round(meals.reduce((s,m)=>s+(+m.kcal||0),0));
+  const goal=store.goal(); const rest=goal-total;
+  document.getElementById('ringNum').textContent=total;
+  document.getElementById('sConsumed').textContent=total+' kcal';
+  document.getElementById('sGoal').textContent=goal+' kcal';
+  const pct=goal>0?Math.min(total/goal,1):0;
+  const fg=document.getElementById('ringFg');
+  fg.style.strokeDashoffset=264-(264*pct);
+  fg.setAttribute('stroke', total>goal?'var(--red)':(pct>=.85?'var(--amber)':'var(--green)'));
+  const restEl=document.getElementById('sRest'), restLbl=document.getElementById('sRestLbl');
+  if(rest>=0){ restLbl.textContent='Restante'; restEl.textContent=rest+' kcal'; restEl.classList.remove('over'); }
+  else { restLbl.textContent='Excedeu'; restEl.textContent=Math.abs(rest)+' kcal'; restEl.classList.add('over'); }
+  const st=document.getElementById('sumStatus');
+  if(total===0)st.textContent='Vamos registrar?';
+  else if(total>goal)st.textContent='Acima da meta hoje';
+  else if(pct>=.85)st.textContent='Quase na meta';
+  else st.textContent='No caminho certo 👍';
+}
+
+function frequentMeals(){
+  const all=store.meals(), map={};
+  all.forEach(m=>{ const k=norm(m.name); if(!k)return;
+    if(!map[k])map[k]={name:m.name,kcal:m.kcal,type:m.type,grams:m.grams,detail:m.detail,count:0}; map[k].count++; });
+  return Object.values(map).sort((a,b)=>b.count-a.count).slice(0,8);
+}
+
+function render(){
+  renderHeader();
+  const meals=dayMeals();
+  renderSummary(meals);
+  const list=document.getElementById('list'); list.innerHTML='';
+
+  const freq=frequentMeals();
+  if(freq.length){
+    const q=document.createElement('div'); q.className='quick';
+    q.innerHTML='<div class="qh">Adicionar rápido</div>';
+    const chips=document.createElement('div'); chips.className='chips';
+    freq.forEach(f=>{ const c=document.createElement('button'); c.className='chip';
+      c.innerHTML=esc(f.name)+' <b>'+Math.round(f.kcal)+'</b>'; c.onclick=()=>quickAdd(f); chips.appendChild(c); });
+    q.appendChild(chips); list.appendChild(q);
+  }
+
+  if(!meals.length){
+    const e=document.createElement('div'); e.className='empty';
+    e.innerHTML='<div class="ico">🍽️</div><p>Nenhuma refeição registrada neste dia.<br>Toque em <b>Adicionar</b> para começar.</p>';
+    list.appendChild(e); return;
+  }
+
+  TYPES.forEach(t=>{
+    const ms=meals.filter(m=>m.type===t.id); if(!ms.length)return;
+    const g=document.createElement('div'); g.className='group';
+    const cal=Math.round(ms.reduce((s,m)=>s+(+m.kcal||0),0));
+    const h=document.createElement('div'); h.className='ghead';
+    h.innerHTML='<span>'+t.em+'</span><span>'+t.label+'</span><span class="gcal">'+cal+' kcal</span>';
+    g.appendChild(h);
+    ms.forEach(m=>{
+      const el=document.createElement('div'); el.className='meal';
+      el.innerHTML='<div class="thumb">'+t.em+'</div>'+
+        '<div class="mi"><div class="mn">'+esc(m.name)+'</div><div class="mt">'+(m.detail?esc(m.detail)+' · ':'')+(m.time||'')+'</div></div>'+
+        '<div class="mc">'+Math.round(+m.kcal||0)+'</div>';
+      el.onclick=()=>openEdit(m); g.appendChild(el);
+    });
+    list.appendChild(g);
+  });
+}
+
+/* ============ FOLHA ADICIONAR / EDITAR ============ */
+function openSheet(){ document.getElementById('scrim').classList.add('on'); document.getElementById('sheet').classList.add('on') }
+function closeSheet(){ document.getElementById('scrim').classList.remove('on'); document.getElementById('sheet').classList.remove('on') }
+function openSet(){ document.getElementById('setGoal').value=store.goal(); document.getElementById('setUrl').value=store.url();
+  document.getElementById('syncStatus').textContent=''; document.getElementById('scrim2').classList.add('on'); document.getElementById('sheet2').classList.add('on') }
+function closeSet(){ document.getElementById('scrim2').classList.remove('on'); document.getElementById('sheet2').classList.remove('on') }
+
+function renderTypes(){
+  const c=document.getElementById('types'); c.innerHTML='';
+  TYPES.forEach(t=>{ const b=document.createElement('div'); b.className='tb'+(t.id===selType?' sel':'');
+    b.innerHTML='<span class="em">'+t.em+'</span>'+t.label; b.onclick=()=>{ selType=t.id; renderTypes(); }; c.appendChild(b); });
+}
+function guessType(){ const h=new Date().getHours(); if(h<11)return'cafe'; if(h<15)return'almoco'; if(h<18)return'lanche'; return'jantar' }
+
+function renderCats(){
+  const cats=[...new Set(allFoods().map(f=>f.c))];
+  const c=document.getElementById('catRow'); c.innerHTML='';
+  const all=document.createElement('div'); all.className='ct'+(curCat===''?' sel':''); all.textContent='Todos';
+  all.onclick=()=>{ curCat=''; renderResults(); }; c.appendChild(all);
+  cats.forEach(cat=>{ const b=document.createElement('div'); b.className='ct'+(curCat===cat?' sel':''); b.textContent=cat;
+    b.onclick=()=>{ curCat=cat; renderResults(); }; c.appendChild(b); });
+}
+
+function renderResults(){
+  renderCats();
+  const q=norm(document.getElementById('fSearch').value);
+  const box=document.getElementById('results'); box.innerHTML='';
+  let items=allFoods().filter(f=>(!curCat||f.c===curCat)&&(!q||norm(f.n).includes(q)));
+  if(!q && !curCat){ box.innerHTML=''; return; }   // só mostra ao buscar ou filtrar
+  items=items.slice(0,60);
+  if(!items.length){ box.innerHTML='<div class="ritem"><span class="rn" style="color:var(--muted)">Nada encontrado. Use o botão abaixo para adicionar manualmente.</span></div>'; return; }
+  items.forEach(f=>{
+    const el=document.createElement('div'); el.className='ritem';
+    el.innerHTML='<div class="rn">'+esc(f.n)+'<div class="rk">'+f.k+' kcal / 100 g · '+f.c+'</div></div><div class="rp">＋</div>';
+    el.onclick=()=>addFoodToCart(f); box.appendChild(el);
+  });
+}
+
+function addFoodToCart(food){
+  const ms=measuresOf(food);
+  cart.push({ key:uid(), name:food.n, k100:food.k, measures:ms, mi:0, qty:1, manual:false });
+  document.getElementById('fSearch').value=''; curCat='';
+  renderResults(); renderCart();
+}
+
+function addManual(){
+  const name=prompt('Nome do alimento:'); if(!name)return;
+  const kcal=parseInt(prompt('Quantas calorias (kcal) nessa porção?'),10);
+  if(isNaN(kcal)||kcal<0){ toast('Calorias inválidas'); return; }
+  cart.push({ key:uid(), name:name.trim(), kcalEach:kcal, qty:1, manual:true });
+  renderCart();
+}
+
+function itemKcal(it){
+  if(it.manual) return it.kcalEach*it.qty;
+  const g=it.measures[it.mi].g; return it.k100*(g*it.qty)/100;
+}
+function itemDetail(it){
+  if(it.manual) return it.qty>1?(it.qty+'×'):'';
+  const m=it.measures[it.mi];
+  if(m.l==='grama (g)') return Math.round(m.g*it.qty)+' g';
+  return (it.qty===1?'':it.qty+'× ')+m.l;
+}
+
+function renderCart(){
+  const c=document.getElementById('cart'); c.innerHTML='';
+  if(!cart.length){ document.getElementById('saveBtn').disabled=true; return; }
+  document.getElementById('saveBtn').disabled=false;
+  const total=Math.round(cart.reduce((s,it)=>s+itemKcal(it),0));
+  const head=document.createElement('div'); head.className='ch';
+  head.innerHTML='<span>Itens desta refeição</span><span>'+total+' kcal</span>'; c.appendChild(head);
+
+  cart.forEach((it,idx)=>{
+    const el=document.createElement('div'); el.className='citem';
+    let measureHtml='';
+    if(!it.manual){
+      measureHtml='<select data-i="'+idx+'" class="cm">'+
+        it.measures.map((m,j)=>'<option value="'+j+'"'+(j===it.mi?' selected':'')+'>'+esc(m.l)+'</option>').join('')+'</select>';
+    } else { measureHtml='<span class="qm">'+it.kcalEach+' kcal cada</span>'; }
+    el.innerHTML=
+      '<div class="c1"><span class="cnm">'+esc(it.name)+'</span>'+
+      '<span class="ckc">'+Math.round(itemKcal(it))+' kcal</span>'+
+      '<button class="cx" data-x="'+idx+'">✕</button></div>'+
+      '<div class="c2">'+measureHtml+
+      '<input type="number" class="cq" data-q="'+idx+'" value="'+it.qty+'" min="0.25" step="0.25" inputmode="decimal">'+
+      '<span class="qm">qtd</span></div>';
+    c.appendChild(el);
+  });
+
+  c.querySelectorAll('.cm').forEach(s=>s.onchange=e=>{ cart[+e.target.dataset.i].mi=+e.target.value; renderCart(); });
+  c.querySelectorAll('.cq').forEach(i=>i.onchange=e=>{ let v=parseFloat(e.target.value); if(isNaN(v)||v<=0)v=1; cart[+e.target.dataset.q].qty=v; renderCart(); });
+  c.querySelectorAll('.cx').forEach(b=>b.onclick=e=>{ cart.splice(+e.target.dataset.x,1); renderCart(); });
+}
+
+function openNew(){
+  document.getElementById('sheetTitle').textContent='Nova refeição';
+  editId=null; cart=[]; curCat='';
+  document.getElementById('fTime').value=nowTime();
+  document.getElementById('fSearch').value='';
+  selType=guessType(); renderTypes(); renderResults(); renderCart();
+  document.getElementById('searchArea').style.display='block';
+  document.getElementById('delBtn').style.display='none';
+  openSheet();
+}
+
+function openEdit(m){
+  document.getElementById('sheetTitle').textContent='Editar refeição';
+  editId=m.id; selType=m.type||'almoco';
+  document.getElementById('fTime').value=m.time||nowTime();
+  renderTypes();
+  // reconstrói item no carrinho
+  const food=allFoods().find(f=>norm(f.n)===norm(m.name));
+  if(food){
+    const ms=measuresOf(food);
+    let mi=ms.findIndex(x=>x.l===m.mlabel); if(mi<0)mi=0;
+    cart=[{key:uid(),name:m.name,k100:food.k,measures:ms,mi:mi,qty:m.qty||1,manual:false}];
+  } else {
+    cart=[{key:uid(),name:m.name,kcalEach:Math.round(m.kcal/(m.qty||1)),qty:m.qty||1,manual:true}];
+  }
+  document.getElementById('searchArea').style.display='block';
+  document.getElementById('delBtn').style.display='block';
+  renderResults(); renderCart(); openSheet();
+}
+
+function quickAdd(f){
+  const meals=store.meals();
+  meals.push({id:uid(),date:curDate,type:f.type||guessType(),name:f.name,kcal:f.kcal,grams:f.grams||null,detail:f.detail||'',mlabel:'',qty:1,time:nowTime()});
+  store.saveMeals(meals); render(); toast(f.name+' adicionado');
+}
+
+function save(){
+  if(!cart.length){ toast('Adicione pelo menos um alimento'); return; }
+  const time=document.getElementById('fTime').value.trim()||nowTime();
+  let meals=store.meals();
+  if(editId){ meals=meals.filter(m=>m.id!==editId); }   // substitui o item editado
+  cart.forEach(it=>{
+    const g=it.manual?null:Math.round(it.measures[it.mi].g*it.qty);
+    meals.push({ id:uid(), date:curDate, type:selType, name:it.name,
+      kcal:Math.round(itemKcal(it)), grams:g, detail:itemDetail(it),
+      mlabel:it.manual?'':it.measures[it.mi].l, qty:it.qty, time });
+  });
+  store.saveMeals(meals); closeSheet(); render(); toast('Salvo! ✔');
+}
+
+function del(){
+  if(!editId)return; if(!confirm('Excluir esta refeição?'))return;
+  store.saveMeals(store.meals().filter(m=>m.id!==editId));
+  closeSheet(); render(); toast('Excluído');
+}
+
+/* ============ NUVEM (Google Sheets via Apps Script) ============ */
+let syncTimer=null;
+function setCloudDot(state){
+  const d=document.getElementById('cloudDot');
+  if(!store.url()){ d.textContent='offline'; return; }
+  d.textContent={syncing:'salvando…',ok:'☁️ salvo',err:'⚠ erro'}[state]||'☁️ nuvem';
+}
+function scheduleSync(){
+  if(!store.url())return;
+  setCloudDot('syncing');
+  clearTimeout(syncTimer);
+  syncTimer=setTimeout(syncUp,1200);
+}
+async function syncUp(silent){
+  const url=store.url(); if(!url){ if(!silent)toast('Configure a URL da nuvem primeiro'); return; }
+  setCloudDot('syncing');
+  try{
+    const payload={action:'save',data:{meals:store.meals(),goal:store.goal(),customFoods:store.customFoods()}};
+    await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    setCloudDot('ok'); if(!silent)setSyncStatus('✔ Dados salvos na planilha.');
+  }catch(e){ setCloudDot('err'); if(!silent)setSyncStatus('⚠ Não consegui salvar. Verifique a URL e a internet.'); }
+}
+async function syncDown(){
+  const url=store.url(); if(!url){ toast('Configure a URL da nuvem primeiro'); return; }
+  if(!confirm('Restaurar da nuvem substitui os dados deste aparelho pelos da planilha. Continuar?'))return;
+  setSyncStatus('Restaurando…'); setCloudDot('syncing');
+  try{
+    const r=await fetch(url+(url.includes('?')?'&':'?')+'action=load');
+    const data=await r.json();
+    if(data&&data.meals){ localStorage.setItem('meals',JSON.stringify(data.meals)); }
+    if(data&&data.goal){ localStorage.setItem('goal',String(data.goal)); }
+    if(data&&data.customFoods){ localStorage.setItem('customFoods',JSON.stringify(data.customFoods)); }
+    setCloudDot('ok'); setSyncStatus('✔ Dados restaurados da planilha.'); render();
+  }catch(e){ setCloudDot('err'); setSyncStatus('⚠ Não consegui restaurar. Verifique a URL.'); }
+}
+function setSyncStatus(t){ document.getElementById('syncStatus').textContent=t }
+
+function exportData(){
+  const data={meals:store.meals(),goal:store.goal(),customFoods:store.customFoods(),exported:new Date().toISOString()};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='minhas-refeicoes-'+ymd(new Date())+'.json'; a.click();
+}
+
+/* ============ EVENTOS ============ */
+document.getElementById('prevD').onclick=()=>shiftDay(-1);
+document.getElementById('nextD').onclick=()=>shiftDay(1);
+document.getElementById('goToday').onclick=()=>{ curDate=ymd(new Date()); render(); };
+document.getElementById('fab').onclick=openNew;
+document.getElementById('scrim').onclick=closeSheet;
+document.getElementById('scrim2').onclick=closeSet;
+document.getElementById('saveBtn').onclick=save;
+document.getElementById('delBtn').onclick=del;
+document.getElementById('btnSet').onclick=openSet;
+document.getElementById('fSearch').oninput=renderResults;
+document.getElementById('manualBtn').onclick=addManual;
+document.getElementById('saveSet').onclick=()=>{
+  const g=parseInt(document.getElementById('setGoal').value,10); if(!isNaN(g)&&g>0)store.saveGoal(g);
+  store.saveUrl(document.getElementById('setUrl').value.trim());
+  setCloudDot(); render(); closeSet(); toast('Configurações salvas');
+};
+document.getElementById('syncUpBtn').onclick=()=>{ store.saveUrl(document.getElementById('setUrl').value.trim()); syncUp(false); };
+document.getElementById('syncDownBtn').onclick=()=>{ store.saveUrl(document.getElementById('setUrl').value.trim()); syncDown(); };
+document.getElementById('exportBtn').onclick=exportData;
+document.getElementById('clearBtn').onclick=()=>{ if(confirm('Apagar TODAS as refeições e configurações deste aparelho? (a planilha na nuvem não é apagada)')){ localStorage.removeItem('meals'); localStorage.removeItem('goal'); localStorage.removeItem('customFoods'); render(); closeSet(); toast('Tudo apagado'); } };
+
+/* ============ INSTALAR COMO APP (PWA) ============ */
+if('serviceWorker' in navigator && location.protocol.indexOf('http')===0){
+  navigator.serviceWorker.register('sw.js').catch(()=>{});
+}
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{ e.preventDefault(); deferredPrompt=e; document.getElementById('btnInstall').style.display='grid'; });
+document.getElementById('btnInstall').onclick=async()=>{
+  if(!deferredPrompt){ toast('No menu do navegador toque em "Adicionar à tela inicial"'); return; }
+  deferredPrompt.prompt(); await deferredPrompt.userChoice; deferredPrompt=null;
+  document.getElementById('btnInstall').style.display='none';
+};
+window.addEventListener('appinstalled',()=>{ document.getElementById('btnInstall').style.display='none'; toast('App instalado! 🎉'); });
+
+/* ============ CADASTRAR PRODUTO POR FOTO (OCR) ============ */
+function openOcr(){
+  document.getElementById('ocrForm').style.display='none';
+  document.getElementById('ocrPrev').style.display='none';
+  document.getElementById('ocrStatus').textContent='';
+  document.getElementById('ocrName').value='';
+  document.getElementById('ocrGrams').value='';
+  document.getElementById('ocrKcal').value='';
+  document.getElementById('ocrPer100').textContent='';
+  document.getElementById('scrim3').classList.add('on');
+  document.getElementById('sheet3').classList.add('on');
+}
+function closeOcr(){ document.getElementById('scrim3').classList.remove('on'); document.getElementById('sheet3').classList.remove('on'); }
+function setOcrStatus(t){ document.getElementById('ocrStatus').textContent=t; }
+function showOcrForm(){ document.getElementById('ocrForm').style.display='block'; updatePer100(); }
+
+function updatePer100(){
+  const g=parseFloat((document.getElementById('ocrGrams').value||'').replace(',','.'));
+  const k=parseFloat((document.getElementById('ocrKcal').value||'').replace(',','.'));
+  const el=document.getElementById('ocrPer100');
+  if(g>0 && k>=0) el.textContent='≈ '+Math.round(k/g*100)+' kcal por 100 g';
+  else el.textContent='';
+}
+
+function parseLabel(text){
+  const low=(text||'').toLowerCase().replace(/\s+/g,' ');
+  let grams=null,kcal=null,m;
+  m=low.match(/por[çc][aã]o[^0-9]*([0-9]+(?:[.,][0-9]+)?)\s*(g|ml)/);
+  if(m) grams=parseFloat(m[1].replace(',','.'));
+  m=low.match(/([0-9]+(?:[.,][0-9]+)?)\s*kcal/);
+  if(m) kcal=parseFloat(m[1].replace(',','.'));
+  if(kcal===null){ m=low.match(/valor energ[ée]tico[^0-9]*([0-9]+(?:[.,][0-9]+)?)/); if(m) kcal=parseFloat(m[1].replace(',','.')); }
+  return {grams,kcal};
+}
+
+function loadTesseract(){
+  return new Promise((res,rej)=>{
+    if(window.Tesseract) return res();
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.1.1/tesseract.min.js';
+    s.onload=res; s.onerror=()=>rej(new Error('cdn'));
+    document.head.appendChild(s);
+  });
+}
+
+async function runOCR(file){
+  const prev=document.getElementById('ocrPrev');
+  prev.src=URL.createObjectURL(file); prev.style.display='block';
+  setOcrStatus('Carregando leitor (precisa de internet na 1ª vez)…');
+  try{ await loadTesseract(); }
+  catch(e){ setOcrStatus('Sem internet para o leitor automático. Digite os valores manualmente abaixo.'); showOcrForm(); return; }
+  setOcrStatus('Lendo a tabela nutricional… aguarde alguns segundos.');
+  try{
+    const worker=await Tesseract.createWorker('por');
+    const {data}=await worker.recognize(file);
+    await worker.terminate();
+    const r=parseLabel(data.text||'');
+    if(r.grams) document.getElementById('ocrGrams').value=r.grams;
+    if(r.kcal!==null) document.getElementById('ocrKcal').value=r.kcal;
+    setOcrStatus(r.kcal!==null ? 'Pronto! Confira os valores lidos e ajuste se precisar.' : 'Não achei as calorias na foto. Digite manualmente.');
+  }catch(e){ setOcrStatus('Não consegui ler a imagem. Digite os valores manualmente.'); }
+  showOcrForm();
+}
+
+function saveProduct(){
+  const name=document.getElementById('ocrName').value.trim();
+  const grams=parseFloat((document.getElementById('ocrGrams').value||'').replace(',','.'));
+  const kcal=parseFloat((document.getElementById('ocrKcal').value||'').replace(',','.'));
+  if(!name){ toast('Dê um nome ao produto'); return; }
+  if(isNaN(grams)||grams<=0){ toast('Informe a porção (g/ml)'); return; }
+  if(isNaN(kcal)||kcal<0){ toast('Informe as calorias da porção'); return; }
+  const per100=Math.round(kcal/grams*100);
+  const food={n:name,k:per100,c:'Meus produtos',m:[['porção ('+grams+' g)',grams]]};
+  const cf=store.customFoods();
+  const i=cf.findIndex(f=>norm(f.n)===norm(name));
+  if(i>=0)cf[i]=food; else cf.push(food);
+  store.saveCustom(cf);
+  closeOcr();
+  if(document.getElementById('sheet').classList.contains('on')) addFoodToCart(food);
+  toast('Produto salvo: '+per100+' kcal/100 g');
+}
+
+document.getElementById('ocrBtn').onclick=openOcr;
+document.getElementById('scrim3').onclick=closeOcr;
+document.getElementById('ocrTake').onclick=()=>document.getElementById('ocrPhoto').click();
+document.getElementById('ocrPhoto').onchange=e=>{ if(e.target.files[0]) runOCR(e.target.files[0]); };
+document.getElementById('ocrManual').onclick=showOcrForm;
+document.getElementById('ocrGrams').oninput=updatePer100;
+document.getElementById('ocrKcal').oninput=updatePer100;
+document.getElementById('ocrSave').onclick=saveProduct;
+
+setCloudDot(); render();
+</script>
+</body>
+</html>
