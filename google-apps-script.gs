@@ -41,7 +41,7 @@ function escreverPlanilha(data) {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sh = ss.getSheetByName('Refeições') || ss.insertSheet('Refeições');
   sh.clear();
-  sh.appendRow(['Data', 'Refeição', 'Horário', 'Alimento', 'Quantidade', 'Calorias (kcal)']);
+  sh.appendRow(['Data', 'Refeição', 'Horário', 'Alimento', 'Quantidade', 'Calorias (kcal)', 'Proteínas (g)', 'Carboidratos (g)', 'Gorduras (g)']);
 
   var tipos = { cafe: 'Café da manhã', almoco: 'Almoço', lanche: 'Lanche', jantar: 'Jantar' };
   var meals = (data.meals || []).slice().sort(function (a, b) {
@@ -49,9 +49,10 @@ function escreverPlanilha(data) {
   });
 
   var linhas = meals.map(function (m) {
-    return [m.date, tipos[m.type] || m.type, m.time || '', m.name, m.detail || '', Math.round(m.kcal || 0)];
+    return [m.date, tipos[m.type] || m.type, m.time || '', m.name, m.detail || '',
+      Math.round(m.kcal || 0), Math.round(m.p || 0), Math.round(m.cb || 0), Math.round(m.f || 0)];
   });
-  if (linhas.length) sh.getRange(2, 1, linhas.length, 6).setValues(linhas);
+  if (linhas.length) sh.getRange(2, 1, linhas.length, 9).setValues(linhas);
 
   // Aba de totais por dia
   var sh2 = ss.getSheetByName('Total por dia') || ss.insertSheet('Total por dia');
