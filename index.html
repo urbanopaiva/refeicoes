@@ -28,8 +28,9 @@
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
   html,body{height:100%}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
-    background:var(--bg);color:var(--text);line-height:1.45;-webkit-font-smoothing:antialiased}
-  .screen{max-width:520px;margin:0 auto;min-height:100vh;padding-bottom:96px}
+    background:var(--bg);color:var(--text);line-height:1.45;-webkit-font-smoothing:antialiased;overflow:hidden}
+  #app{display:flex;flex-direction:column;height:100vh;height:100dvh;max-width:520px;margin:0 auto}
+  .screen{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;min-height:0;padding-bottom:16px;overscroll-behavior:contain}
   .fade{animation:fade .28s ease}
   @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
@@ -47,8 +48,9 @@
   .dlabel{text-align:center;flex:1}
   .dlabel .d1{font-size:15px;font-weight:600;text-transform:capitalize}
   .dlabel .d2{font-size:12px;opacity:.85}
-  .dlabel small{display:inline-block;font-size:11px;opacity:.9;margin-top:3px;cursor:pointer;
-    text-decoration:underline}
+  .dlabel small{display:inline-block;font-size:11px;margin-top:5px;cursor:pointer;
+    background:rgba(255,255,255,.2);padding:3px 11px;border-radius:11px}
+  .dlabel small:active{transform:scale(.95)}
 
   .pad{padding:0 14px}
   .card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px}
@@ -163,11 +165,23 @@
   .save:active{transform:scale(.99)}
   .del{width:100%;border:none;background:var(--red-l);color:var(--red);font-size:15px;font-weight:600;
     border-radius:14px;padding:13px;margin-top:10px;cursor:pointer}
-  .linkbtn{background:none;border:none;color:var(--green-d);font-size:13px;text-decoration:underline;cursor:pointer}
-  .ghost{background:none;border:none;color:var(--muted);font-size:13px;text-decoration:underline;cursor:pointer;display:block;margin-top:14px}
+  .linkbtn{background:none;border:none;color:var(--green-d);font-size:13px;font-weight:600;cursor:pointer;padding:4px 0}
+  .linkbtn:active{opacity:.55}
+  .addlink{display:block;width:100%;border:1px dashed var(--line);background:var(--bg);color:var(--green-d);
+    border-radius:12px;padding:12px;font-size:14px;font-weight:600;cursor:pointer;margin-top:10px}
+  .addlink:active{background:var(--green-l)}
+  .ghost{background:none;border:none;color:var(--muted);font-size:13px;cursor:pointer;display:block;margin-top:14px;font-weight:600}
+  .sheetclose{position:absolute;top:12px;right:14px;width:34px;height:34px;border:none;background:var(--bg);
+    color:var(--muted);border-radius:50%;font-size:15px;cursor:pointer;z-index:2;display:grid;place-items:center}
+  .sheetclose:active{transform:scale(.92)}
+  .stepper{display:flex;align-items:center;gap:8px}
+  .stepper input{flex:1;text-align:center}
+  .stp{width:46px;height:46px;border:1px solid var(--line);background:var(--card);border-radius:11px;
+    font-size:24px;line-height:1;cursor:pointer;flex-shrink:0;color:var(--text);display:grid;place-items:center}
+  .stp:active{background:var(--green-l);border-color:var(--green)}
 
   /* Bottom nav */
-  .bnav{position:fixed;bottom:0;left:0;right:0;max-width:520px;margin:0 auto;background:var(--card);
+  .bnav{flex-shrink:0;background:var(--card);
     border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:flex-end;
     padding:8px 4px calc(env(safe-area-inset-bottom) + 8px);z-index:40}
   .bnav button{flex:1;border:none;background:none;color:var(--muted);font-size:10px;display:flex;
@@ -184,7 +198,7 @@
   .sheet{position:fixed;left:0;right:0;bottom:0;z-index:60;background:var(--card);
     border-radius:22px 22px 0 0;padding:8px 18px calc(env(safe-area-inset-bottom) + 22px);
     max-width:520px;margin:0 auto;transform:translateY(110%);transition:transform .26s cubic-bezier(.3,.8,.4,1);
-    max-height:92vh;overflow-y:auto}
+    max-height:92vh;overflow-y:auto;overscroll-behavior:contain}
   .sheet.on{transform:translateY(0)}
   .grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:6px auto 14px}
   .sheet h2{font-size:18px;font-weight:600;margin-bottom:6px}
@@ -212,10 +226,9 @@
   .citem .cnm{font-size:14px;font-weight:600;flex:1}
   .citem .ckc{font-size:14px;font-weight:700;color:var(--green-d);white-space:nowrap}
   .citem .cx{border:none;background:none;color:var(--red);font-size:18px;cursor:pointer;padding:0 2px}
-  .citem .c2{display:flex;gap:8px;margin-top:8px;align-items:center}
-  .citem .c2 select{flex:1;padding:9px 10px;font-size:14px}
-  .citem .c2 input{width:74px;padding:9px;font-size:14px;text-align:center}
-  .citem .c2 .qm{font-size:12px;color:var(--muted)}
+  .citem .c2{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+  .citem .c2 select{width:100%;padding:11px 10px;font-size:14px}
+  .citem .c2 .cq{padding:9px;font-size:16px;text-align:center}
   .toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 96px);transform:translateX(-50%) translateY(20px);
     background:var(--text);color:var(--bg);padding:11px 20px;border-radius:24px;font-size:14px;font-weight:500;
     opacity:0;pointer-events:none;transition:.25s;z-index:80;max-width:90%;text-align:center}
@@ -224,6 +237,7 @@
 </head>
 <body>
 
+<div id="app">
 <div class="screen" id="screen"></div>
 
 <nav class="bnav">
@@ -233,11 +247,13 @@
   <button data-tab="hist"><span class="bi">📋</span>Histórico</button>
   <button data-tab="ajustes"><span class="bi">⚙️</span>Ajustes</button>
 </nav>
+</div>
 
 <!-- Add/Edit meal sheet -->
 <div class="scrim" id="scrim"></div>
 <div class="sheet" id="sheet">
   <div class="grab"></div>
+  <button class="sheetclose" id="x1" aria-label="Fechar">✕</button>
   <h2 id="sheetTitle">Nova refeição</h2>
   <div class="types" id="types"></div>
   <label class="fl">Horário</label>
@@ -248,7 +264,8 @@
     <input type="search" id="fSearch" placeholder="Ex: arroz, frango, banana..." autocomplete="off">
     <div class="catrow" id="catRow"></div>
     <div class="results" id="results"></div>
-    <button class="linkbtn" id="newFoodBtn" style="margin-top:12px">+ Criar um alimento / produto novo</button>
+    <button class="addlink" id="netBtn">🌐 Buscar na internet (mais alimentos)</button>
+    <button class="addlink" id="newFoodBtn">＋ Criar um alimento / produto novo</button>
   </div>
   <div class="cart" id="cart"></div>
   <button class="save" id="saveBtn">Salvar refeição</button>
@@ -259,6 +276,7 @@
 <div class="scrim" id="scrim3"></div>
 <div class="sheet" id="sheet3">
   <div class="grab"></div>
+  <button class="sheetclose" id="x3" aria-label="Fechar">✕</button>
   <h2 id="nfTitle">Criar alimento</h2>
   <p class="sd" style="margin-bottom:4px">Informe os dados da embalagem (por porção). Fica salvo em "Meus alimentos" para usar sempre.</p>
   <label class="fl">Nome</label>
@@ -281,6 +299,7 @@
 <div class="scrim" id="scrim4"></div>
 <div class="sheet" id="sheet4">
   <div class="grab"></div>
+  <button class="sheetclose" id="x4" aria-label="Fechar">✕</button>
   <h2>Copiar refeições</h2>
   <p class="sd" style="margin-bottom:10px">Escolha um dia para copiar todas as refeições dele para <b id="copyTarget"></b>.</p>
   <div id="copyList"></div>
@@ -295,7 +314,7 @@ const FOODS=[
  {n:'Pão francês',k:300,p:9,cb:57,f:3,c:'Pães',m:[['unidade',50]]},
  {n:'Pão de forma',k:253,p:9,cb:48,f:3,c:'Pães',m:[['fatia',25]]},
  {n:'Pão integral',k:246,p:11,cb:43,f:4,c:'Pães',m:[['fatia',25]]},
- {n:'Pão de queijo',k:330,p:5,cb:38,f:17,c:'Pães',m:[['unidade',20]]},
+ {n:'Pão de queijo',k:363,p:5.1,cb:34,f:25,c:'Pães',m:[['unidade',20]]},
  {n:'Pão de hambúrguer',k:270,p:8,cb:49,f:4,c:'Pães',m:[['unidade',50]]},
  {n:'Tapioca (goma)',k:240,p:0,cb:58,f:0,c:'Pães',m:[['colher de sopa',20]]},
  {n:'Cuscuz de milho',k:113,p:2,cb:25,f:0.6,c:'Pães',m:[['fatia',80]]},
@@ -329,7 +348,7 @@ const FOODS=[
  {n:'Costelinha de porco',k:290,p:24,cb:0,f:21,c:'Carnes',m:[['porção',120]]},
  {n:'Linguiça toscana',k:296,p:16,cb:2,f:25,c:'Carnes',m:[['gomo',60]]},
  {n:'Bacon frito',k:541,p:37,cb:1.4,f:42,c:'Carnes',m:[['fatia',8]]},
- {n:'Peito de frango grelhado',k:159,p:32,cb:0,f:3.6,c:'Aves',m:[['filé',100]]},
+ {n:'Peito de frango grelhado',k:159,p:32,cb:0,f:2.5,c:'Aves',m:[['filé',100]]},
  {n:'Coxa de frango assada',k:215,p:27,cb:0,f:11,c:'Aves',m:[['unidade',90]]},
  {n:'Sobrecoxa assada',k:230,p:25,cb:0,f:14,c:'Aves',m:[['unidade',100]]},
  {n:'Frango à passarinho frito',k:280,p:25,cb:3,f:18,c:'Aves',m:[['porção',120]]},
@@ -446,7 +465,7 @@ const FOODS=[
  {n:'Nuggets',k:296,p:15,cb:16,f:19,c:'Lanches',m:[['unidade',16]]},
  {n:'Batata frita (fast food)',k:312,p:3.4,cb:41,f:15,c:'Lanches',m:[['porção média',100]]},
  {n:'Salgadinho de pacote',k:540,p:6,cb:55,f:33,c:'Lanches',m:[['pacote pequeno',50]]},
- {n:'Pipoca',k:387,p:9,cb:63,f:11,c:'Lanches',m:[['xícara',15]]},
+ {n:'Pipoca (com óleo)',k:448,p:9.9,cb:70,f:16,c:'Lanches',m:[['xícara',15]]},
  {n:'Azeite de oliva',k:884,p:0,cb:0,f:100,c:'Óleos',m:[['colher de sopa',8],['fio',4]]},
  {n:'Óleo de soja',k:884,p:0,cb:0,f:100,c:'Óleos',m:[['colher de sopa',8]]},
  {n:'Óleo de coco',k:862,p:0,cb:0,f:100,c:'Óleos',m:[['colher de sopa',8]]},
@@ -818,13 +837,36 @@ function wireTab(){
 }
 
 /* ============ ADD / EDIT MEAL ============ */
-function openSheet(){ document.getElementById('scrim').classList.add('on'); document.getElementById('sheet').classList.add('on'); }
-function closeSheet(){ document.getElementById('scrim').classList.remove('on'); document.getElementById('sheet').classList.remove('on'); }
+function lockScroll(b){ const s=document.getElementById('screen'); if(s)s.style.overflowY=b?'hidden':'auto'; }
+function openSheet(){ document.getElementById('scrim').classList.add('on'); document.getElementById('sheet').classList.add('on'); lockScroll(true); }
+function closeSheet(){ document.getElementById('scrim').classList.remove('on'); document.getElementById('sheet').classList.remove('on'); lockScroll(false); }
 function renderTypes(){ const c=document.getElementById('types'); c.innerHTML='';
   TYPES.forEach(t=>{ const b=document.createElement('div'); b.className='tb'+(t.id===selType?' sel':''); b.innerHTML='<span class="em">'+t.em+'</span>'+t.label;
     b.onclick=()=>{ selType=t.id; renderTypes(); }; c.appendChild(b); }); }
 function guessType(){ const h=new Date().getHours(); if(h<11)return'cafe'; if(h<15)return'almoco'; if(h<18)return'lanche'; return'jantar' }
-function measuresOf(food){ const base=(food.m||[]).map(x=>({l:x[0],g:x[1]})); base.push({l:'100 g',g:100}); base.push({l:'grama (g)',g:1}); return base; }
+function measuresOf(food){ const base=(food.m||[]).map(x=>({l:x[0],g:x[1]}));
+  if(!base.some(x=>x.g===100)) base.push({l:'100 g',g:100});
+  if(!base.some(x=>x.g===1)) base.push({l:'grama (g)',g:1}); return base; }
+
+async function searchInternet(){
+  const q=(document.getElementById('fSearch').value||'').trim()||prompt('Buscar produto na internet:');
+  if(!q)return; const box=document.getElementById('results');
+  box.innerHTML='<div class="ritem"><span class="rn" style="color:var(--muted)">🌐 Buscando na internet…</span></div>';
+  try{
+    const url='https://world.openfoodfacts.org/cgi/search.pl?action=process&json=1&page_size=30&sort_by=unique_scans_n&search_terms='+encodeURIComponent(q)+'&fields=product_name,product_name_pt,brands,nutriments';
+    const r=await fetch(url); if(!r.ok) throw new Error('rate'); const d=await r.json(); const seen={};
+    const items=(d.products||[]).map(p=>{ const n=p.nutriments||{}; const k=n['energy-kcal_100g'];
+      if(k==null||isNaN(k))return null; let name=(p.product_name_pt||p.product_name||'').trim(); if(!name)return null;
+      if(p.brands)name+=' ('+p.brands.split(',')[0].trim()+')';
+      return {n:name,k:Math.round(k),p:+(+n.proteins_100g||0).toFixed(1),cb:+(+n.carbohydrates_100g||0).toFixed(1),f:+(+n.fat_100g||0).toFixed(1),c:'Meus alimentos',m:[]}; })
+      .filter(x=>{ if(!x)return false; const key=norm(x.n)+x.k; if(seen[key])return false; seen[key]=1; return true; }).slice(0,20);
+    if(!items.length){ box.innerHTML='<div class="ritem"><span class="rn" style="color:var(--muted)">Nada encontrado na internet para "'+esc(q)+'".</span></div>'; return; }
+    box.innerHTML=''; items.forEach(f=>{ const el=document.createElement('div'); el.className='ritem';
+      el.innerHTML='<div class="rn">'+esc(f.n)+'<div class="rk">🌐 '+f.k+' kcal · P'+f.p+' C'+f.cb+' G'+f.f+' /100g</div></div><div class="rp">＋</div>';
+      el.onclick=()=>{ const cf=store.customFoods(); if(!cf.find(x=>norm(x.n)===norm(f.n))){ cf.push(f); store.saveCustom(cf); } addFoodToCart(f); toast('Adicionado da internet'); };
+      box.appendChild(el); });
+  }catch(e){ box.innerHTML='<div class="ritem"><span class="rn" style="color:var(--muted)">Não consegui buscar agora (sem internet ou muitas buscas seguidas). Tente novamente em alguns segundos.</span></div>'; }
+}
 
 function renderCats(){ const cats=[...new Set(allFoods().map(f=>f.c))]; const c=document.getElementById('catRow'); c.innerHTML='';
   const all=document.createElement('div'); all.className='ct'+(curCat===''?' sel':''); all.textContent='Todos'; all.onclick=()=>{ curCat=''; renderResults(); }; c.appendChild(all);
@@ -849,13 +891,19 @@ function renderCart(){ const c=document.getElementById('cart'); c.innerHTML='';
   cart.forEach((it,idx)=>{ const v=itemVals(it); const el=document.createElement('div'); el.className='citem';
     el.innerHTML='<div class="c1"><span class="cnm">'+esc(it.name)+'</span><span class="ckc">'+R(v.kcal)+' kcal</span><button class="cx" data-x="'+idx+'">✕</button></div>'+
       '<div class="c2"><select data-i="'+idx+'" class="cm">'+it.measures.map((m,j)=>'<option value="'+j+'"'+(j===it.mi?' selected':'')+'>'+esc(m.l)+'</option>').join('')+'</select>'+
-      '<input type="number" class="cq" data-q="'+idx+'" value="'+it.qty+'" min="0.25" step="0.25" inputmode="decimal"><span class="qm">qtd</span></div>'; c.appendChild(el); });
+      '<div class="stepper"><button class="stp" data-dec="'+idx+'">−</button>'+
+      '<input type="number" class="cq" data-q="'+idx+'" value="'+it.qty+'" min="0.25" step="0.25" inputmode="decimal">'+
+      '<button class="stp" data-inc="'+idx+'">+</button></div></div>'; c.appendChild(el); });
   const macro=document.createElement('div'); macro.className='sd'; macro.style.marginTop='2px';
   macro.textContent='Total: P '+R(tot.p)+'g · C '+R(tot.cb)+'g · G '+R(tot.f)+'g'; c.appendChild(macro);
   const sc=document.createElement('button'); sc.className='linkbtn'; sc.style.marginTop='8px'; sc.textContent='⭐ Salvar como refeição favorita'; sc.onclick=saveComboFromCart; c.appendChild(sc);
   c.querySelectorAll('.cm').forEach(s=>s.onchange=e=>{ cart[+e.target.dataset.i].mi=+e.target.value; renderCart(); });
   c.querySelectorAll('.cq').forEach(i=>i.onchange=e=>{ let v=parseFloat(e.target.value); if(isNaN(v)||v<=0)v=1; cart[+e.target.dataset.q].qty=v; renderCart(); });
+  c.querySelectorAll('[data-dec]').forEach(b=>b.onclick=()=>stepQty(+b.dataset.dec,-1));
+  c.querySelectorAll('[data-inc]').forEach(b=>b.onclick=()=>stepQty(+b.dataset.inc,1));
   c.querySelectorAll('.cx').forEach(b=>b.onclick=e=>{ cart.splice(+e.target.dataset.x,1); renderCart(); }); }
+function stepQty(idx,dir){ const it=cart[idx]; const step=(it.measures[it.mi].l==='grama (g)')?10:1;
+  let q=Math.round((it.qty+dir*step)*100)/100; if(q<0.25)q=0.25; it.qty=q; renderCart(); }
 
 function openNew(){ document.getElementById('sheetTitle').textContent='Nova refeição'; editId=null; cart=[]; curCat='';
   document.getElementById('fTime').value=nowTime(); document.getElementById('fSearch').value='';
@@ -902,13 +950,13 @@ function delMeal(){ if(!editId)return; if(!confirm('Excluir esta refeição?'))r
 /* ============ CRIAR ALIMENTO ============ */
 function openNewFood(){ editFoodName=null; document.getElementById('nfTitle').textContent='Criar alimento';
   ['nfName','nfKcal','nfP','nfC','nfF'].forEach(id=>document.getElementById(id).value=''); document.getElementById('nfGrams').value=100;
-  document.getElementById('nfPer100').textContent=''; document.getElementById('scrim3').classList.add('on'); document.getElementById('sheet3').classList.add('on'); }
+  document.getElementById('nfPer100').textContent=''; document.getElementById('scrim3').classList.add('on'); document.getElementById('sheet3').classList.add('on'); lockScroll(true); }
 function openEditFood(food){ editFoodName=food.n; document.getElementById('nfTitle').textContent='Editar alimento';
   const g=(food.m&&food.m[0]&&food.m[0][1])||100, fac=g/100;
   document.getElementById('nfName').value=food.n; document.getElementById('nfGrams').value=g;
   document.getElementById('nfKcal').value=R(food.k*fac); document.getElementById('nfP').value=+(food.p*fac).toFixed(1);
   document.getElementById('nfC').value=+(food.cb*fac).toFixed(1); document.getElementById('nfF').value=+(food.f*fac).toFixed(1);
-  nfUpdate(); document.getElementById('scrim3').classList.add('on'); document.getElementById('sheet3').classList.add('on'); }
+  nfUpdate(); document.getElementById('scrim3').classList.add('on'); document.getElementById('sheet3').classList.add('on'); lockScroll(true); }
 
 function openCopy(){ document.getElementById('copyTarget').textContent=dateLabel(curDate);
   const meals=store.meals(), days={}; meals.forEach(m=>{ if(m.date!==curDate) days[m.date]=(days[m.date]||0)+(+m.kcal||0); });
@@ -917,12 +965,12 @@ function openCopy(){ document.getElementById('copyTarget').textContent=dateLabel
   else { list.innerHTML=''; keys.forEach(k=>{ const d=parseYmd(k); const el=document.createElement('button'); el.className='btn';
     el.style.cssText='margin-bottom:8px;text-align:left'; el.textContent=DOW[d.getDay()]+' '+d.getDate()+'/'+String(d.getMonth()+1).padStart(2,'0')+' · '+R(days[k])+' kcal';
     el.onclick=()=>copyDay(k); list.appendChild(el); }); }
-  document.getElementById('scrim4').classList.add('on'); document.getElementById('sheet4').classList.add('on'); }
-function closeCopy(){ document.getElementById('scrim4').classList.remove('on'); document.getElementById('sheet4').classList.remove('on'); }
+  document.getElementById('scrim4').classList.add('on'); document.getElementById('sheet4').classList.add('on'); lockScroll(true); }
+function closeCopy(){ document.getElementById('scrim4').classList.remove('on'); document.getElementById('sheet4').classList.remove('on'); lockScroll(false); }
 function copyDay(srcKey){ const src=store.meals().filter(m=>m.date===srcKey); let meals=store.meals();
   src.forEach(m=>meals.push({...m,id:uid(),date:curDate})); store.saveMeals(meals); closeCopy(); render(); toast(src.length+' refeição(ões) copiada(s)'); }
 function dateLabel(key){ if(key===ymd(new Date()))return 'hoje'; const d=parseYmd(key); return DOW[d.getDay()]+' '+d.getDate()+'/'+String(d.getMonth()+1).padStart(2,'0'); }
-function closeNewFood(){ document.getElementById('scrim3').classList.remove('on'); document.getElementById('sheet3').classList.remove('on'); }
+function closeNewFood(){ document.getElementById('scrim3').classList.remove('on'); document.getElementById('sheet3').classList.remove('on'); lockScroll(false); }
 function nfUpdate(){ const g=parseFloat((document.getElementById('nfGrams').value||'').replace(',','.')); const k=parseFloat((document.getElementById('nfKcal').value||'').replace(',','.'));
   document.getElementById('nfPer100').textContent=(g>0&&k>=0)?('≈ '+R(k/g*100)+' kcal por 100 g'):''; }
 function saveNewFood(){ const name=document.getElementById('nfName').value.trim();
@@ -977,6 +1025,23 @@ document.getElementById('fab').onclick=openNew;
 document.getElementById('scrim').onclick=closeSheet;
 document.getElementById('scrim3').onclick=closeNewFood;
 document.getElementById('scrim4').onclick=closeCopy;
+document.getElementById('x1').onclick=closeSheet;
+document.getElementById('x3').onclick=closeNewFood;
+document.getElementById('x4').onclick=closeCopy;
+document.getElementById('netBtn').onclick=searchInternet;
+
+/* Arrastar a folha para baixo para fechar */
+function attachDrag(sheet,closeFn){
+  let startY=0,cur=0,drag=false;
+  sheet.addEventListener('touchstart',e=>{ if(sheet.scrollTop>0){drag=false;return;} startY=e.touches[0].clientY; cur=0; drag=true; },{passive:true});
+  sheet.addEventListener('touchmove',e=>{ if(!drag)return; cur=e.touches[0].clientY-startY;
+    if(cur<=0){ sheet.style.transform=''; return; } sheet.style.transition='none'; sheet.style.transform='translateY('+cur+'px)'; },{passive:true});
+  sheet.addEventListener('touchend',()=>{ if(!drag)return; drag=false; sheet.style.transition='';
+    if(cur>110){ sheet.style.transform=''; closeFn(); } else sheet.style.transform=''; cur=0; });
+}
+attachDrag(document.getElementById('sheet'),closeSheet);
+attachDrag(document.getElementById('sheet3'),closeNewFood);
+attachDrag(document.getElementById('sheet4'),closeCopy);
 document.getElementById('saveBtn').onclick=saveMeal;
 document.getElementById('delBtn').onclick=delMeal;
 document.getElementById('fSearch').oninput=renderResults;
