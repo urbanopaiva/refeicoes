@@ -57,7 +57,7 @@
   .sechead{font-size:13px;font-weight:600;color:var(--muted);margin:18px 4px 8px;display:flex;align-items:center;gap:6px}
 
   /* Ring + macros summary */
-  .summary{display:flex;align-items:center;gap:16px;margin-top:-22px;position:relative}
+  .summary{display:flex;align-items:center;gap:16px}
   .ring{position:relative;width:104px;height:104px;flex-shrink:0}
   .ring svg{transform:rotate(-90deg)}
   .ring .rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
@@ -240,7 +240,7 @@
   <h2 id="sheetTitle">Nova refeição</h2>
   <div class="types" id="types"></div>
   <label class="fl">Horário</label>
-  <input type="text" id="fTime" placeholder="00:00">
+  <input type="time" id="fTime">
   <div id="searchArea">
     <label class="fl">Buscar alimento</label>
     <input type="search" id="fSearch" placeholder="Ex: arroz, frango, banana..." autocomplete="off">
@@ -549,8 +549,7 @@ function viewDiario(){
 
   return `
   <header>
-    <div class="h-top"><div><h1>Minhas Refeições</h1><div class="sub" id="cloudSub">${store.url()?'☁️ sincronizado':'salvo neste aparelho'}</div></div>
-      <span class="cloud-dot" id="cloudDot">${store.url()?'☁️':'•'}</span></div>
+    <div class="h-top"><div><h1>Minhas Refeições</h1><div class="sub" id="cloudSub">${store.url()?'☁️ sincronizado':'salvo neste aparelho'}</div></div></div>
     <div class="datenav">
       <button data-d="-1">‹</button>
       <div class="dlabel"><div class="d1">${lbl}</div><div class="d2">${DOW[d.getDay()]}, ${d.getDate()} de ${MON[d.getMonth()]} ${d.getFullYear()}</div>
@@ -859,9 +858,9 @@ function saveNewFood(){ const name=document.getElementById('nfName').value.trim(
   closeNewFood(); if(document.getElementById('sheet').classList.contains('on')) addFoodToCart(food); toast('Alimento salvo'); }
 
 /* ============ NUVEM ============ */
-function setCloudDot(state){ const d=document.getElementById('cloudDot'), sub=document.getElementById('cloudSub'); if(!d)return;
-  if(!store.url()){ d.textContent='•'; if(sub)sub.textContent='salvo neste aparelho'; return; }
-  d.textContent={syncing:'…',ok:'☁️',err:'⚠'}[state]||'☁️'; if(sub)sub.textContent={syncing:'salvando…',ok:'☁️ sincronizado',err:'⚠ erro ao salvar'}[state]||'☁️ sincronizado'; }
+function setCloudDot(state){ const sub=document.getElementById('cloudSub'); if(!sub)return;
+  if(!store.url()){ sub.textContent='salvo neste aparelho'; return; }
+  sub.textContent={syncing:'☁️ salvando…',ok:'☁️ sincronizado',err:'⚠ erro ao salvar'}[state]||'☁️ sincronizado'; }
 function scheduleSync(){ if(!store.url())return; setCloudDot('syncing'); clearTimeout(syncTimer); syncTimer=setTimeout(()=>syncUp(true),1200); }
 async function syncUp(silent){ const url=store.url(); if(!url){ if(!silent)toast('Configure a URL primeiro'); return; } setCloudDot('syncing');
   try{ const payload={action:'save',data:{meals:store.meals(),goal:store.goal(),goalP:localStorage.getItem('goalP')||'',goalCb:localStorage.getItem('goalCb')||'',goalF:localStorage.getItem('goalF')||'',customFoods:store.customFoods()}};
