@@ -1,5 +1,5 @@
 /* Service worker — funciona offline e mantém o app atualizado */
-const CACHE = 'refeicoes-v4';
+const CACHE = 'refeicoes-v5';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
