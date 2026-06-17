@@ -11,42 +11,53 @@ Arquivos:
   COMO-USAR.txt ......... este arquivo
 
 
+As 4 abas (barra de baixo):
+  📅 Diário  · 📊 Análise · ➕ adicionar · 📋 Histórico · ⚙️ Ajustes
+
+
 ----------------------------------------------------------
 1) REGISTRAR REFEIÇÕES (cálculo automático)
 ----------------------------------------------------------
-- Toque em "＋ Adicionar refeição".
+- Toque no botão verde ＋ (centro da barra de baixo).
 - Escolha o tipo (café, almoço, lanche, jantar).
 - Busque o alimento (ex: "arroz") ou filtre por categoria.
 - Toque no alimento e ajuste a QUANTIDADE e a MEDIDA
   (colher, fatia, unidade, concha, grama...).
-  As calorias são somadas automaticamente.
-- Junte vários alimentos e toque em "Salvar".
+  As calorias E os macros (proteína/carbo/gordura) são
+  somados automaticamente.
+- Junte vários alimentos e toque em "Salvar refeição".
 
-O anel no topo mostra o total do dia x sua meta.
-Toque numa refeição da lista para editar ou excluir.
-Em ⚙️ Configurações você define a meta diária.
-
-
-----------------------------------------------------------
-2) CADASTRAR PRODUTO POR FOTO DA TABELA NUTRICIONAL
-----------------------------------------------------------
-Para itens de mercado (iogurte, biscoito, etc.):
-- Em "＋ Adicionar refeição" toque em
-  "📷 Cadastrar produto pela tabela nutricional".
-- Tire uma foto da tabela "Informação Nutricional".
-- O app LÊ a porção e as calorias automaticamente.
-- Confira/ajuste o nome, a porção e as calorias e salve.
-- O produto fica salvo em "Meus produtos" e aparece na
-  busca para você usar sempre que quiser.
-
-Dicas para a foto sair bem:
-- Boa luz, tabela reta e enquadrada, texto nítido.
-- A 1ª vez precisa de internet (baixa o leitor de texto).
-- Se a leitura falhar, é só digitar os valores na mão.
+No Diário: o anel mostra calorias do dia x meta, e as
+barras mostram proteínas, carboidratos e gorduras.
+Toque numa refeição para editar ou excluir.
+"Adicionar rápido" repete os itens que você mais usa.
 
 
 ----------------------------------------------------------
-3) INSTALAR COMO APP NO CELULAR
+2) CRIAR UM ALIMENTO / PRODUTO NOVO
+----------------------------------------------------------
+Para itens que não estão na lista (ex: um iogurte de marca):
+- No ＋, toque em "Criar um alimento / produto novo".
+- Digite o nome, a porção (g/ml) e as calorias da
+  embalagem. Os macros são opcionais.
+- Salve. Fica guardado em "Meus alimentos" e aparece na
+  busca para usar sempre que quiser.
+
+
+----------------------------------------------------------
+3) ANÁLISE E HISTÓRICO
+----------------------------------------------------------
+- 📊 Análise: média diária, dias na meta, sequência,
+  gráfico de calorias por dia, distribuição de macros,
+  calorias por refeição e mais consumidos (7/14/30 dias).
+- 📋 Histórico: tabela com todos os dias; toque num dia
+  para abri-lo no Diário.
+- ⚙️ Ajustes: meta de calorias e metas de macros
+  (com cálculo automático), nuvem e backup.
+
+
+----------------------------------------------------------
+4) INSTALAR COMO APP NO CELULAR
 ----------------------------------------------------------
 Há dois caminhos:
 
@@ -54,25 +65,21 @@ A) Modo simples (atalho):
    Abra o index.html no navegador do celular e use o menu
    "Adicionar à tela inicial". Vira um ícone na tela.
 
-B) Modo app completo (recomendado: abre em tela cheia,
-   funciona offline de verdade, atualiza sozinho):
-   Para isso o app precisa estar publicado num endereço
-   https. É grátis e rápido. Opção mais fácil:
+B) Modo app completo (recomendado: tela cheia, offline,
+   atualiza sozinho). O app já está publicado em:
 
-   GitHub Pages:
-   1. Crie conta em github.com (grátis).
-   2. Crie um repositório novo (ex: "refeicoes").
-   3. Envie os arquivos desta pasta para o repositório.
-   4. Em Settings > Pages, escolha a branch "main" e salve.
-   5. Em ~1 min surge um link https://seuusuario.github.io/refeicoes
-   6. Abra esse link no celular. O navegador vai oferecer
-      "Instalar app" (ou use "Adicionar à tela inicial").
+       https://urbanopaiva.github.io/refeicoes/
 
-   * Posso publicar isso para você se quiser — é só pedir.
+   - Android (Chrome): menu ⋮ > "Instalar aplicativo"
+     ou "Adicionar à tela inicial".
+   - iPhone (Safari): botão Compartilhar >
+     "Adicionar à Tela de Início". (No iPhone só funciona
+      no Safari.)
+   - Também há o botão "Instalar como app" em ⚙️ Ajustes.
 
 
 ----------------------------------------------------------
-4) SALVAR NA NUVEM (Google Planilhas) — opcional
+5) SALVAR NA NUVEM (Google Planilhas) — opcional
 ----------------------------------------------------------
 Guarda seus dados numa planilha de verdade (backup que
 nunca se perde, mesmo trocando de celular).
@@ -87,8 +94,8 @@ nunca se perde, mesmo trocando de celular).
     - Quem pode acessar: Qualquer pessoa
     - Implantar e autorizar (em "Avançado" > "Acessar...").
  E. Copie a URL (termina em /exec).
- F. No app: ⚙️ Configurações > cole a URL no campo
-    "Banco de dados" > "Salvar configurações".
+ F. No app: ⚙️ Ajustes > cole a URL no campo
+    "Banco de dados".
  G. Toque em "⬆️ Salvar na nuvem".
     Depois disso tudo é salvo automaticamente.
 
