@@ -848,24 +848,37 @@ function measuresOf(food){ const base=(food.m||[]).map(x=>({l:x[0],g:x[1]}));
   if(!base.some(x=>x.g===100)) base.push({l:'100 g',g:100});
   if(!base.some(x=>x.g===1)) base.push({l:'grama (g)',g:1}); return base; }
 
+async function fetchJSON(u){ const r=await fetch(u); if(!r.ok) throw new Error(r.status); return r.json(); }
+function dedupeFoods(arr){ const seen={}; return arr.filter(x=>{ if(!x)return false; const key=norm(x.n)+'|'+x.k; if(seen[key])return false; seen[key]=1; return true; }); }
+async function offSearch(q){
+  for(const host of ['world','br']){
+    try{ const d=await fetchJSON('https://'+host+'.openfoodfacts.org/cgi/search.pl?action=process&json=1&page_size=30&sort_by=unique_scans_n&search_terms='+encodeURIComponent(q)+'&fields=product_name,product_name_pt,brands,nutriments');
+      const items=dedupeFoods((d.products||[]).map(p=>{ const n=p.nutriments||{}; const k=n['energy-kcal_100g']; if(k==null||isNaN(k))return null;
+        let name=(p.product_name_pt||p.product_name||'').trim(); if(!name)return null; if(p.brands)name+=' ('+p.brands.split(',')[0].trim()+')';
+        return {n:name,k:Math.round(k),p:+(+n.proteins_100g||0).toFixed(1),cb:+(+n.carbohydrates_100g||0).toFixed(1),f:+(+n.fat_100g||0).toFixed(1),src:'🌐'}; })).slice(0,20);
+      if(items.length) return items;
+    }catch(e){}
+  }
+  return null;
+}
+async function usdaSearch(q){
+  try{ const d=await fetchJSON('https://api.nal.usda.gov/fdc/v1/foods/search?query='+encodeURIComponent(q)+'&pageSize=20&dataType=Foundation,SR%20Legacy,Branded&api_key=DEMO_KEY');
+    const map={1008:'k',1003:'p',1005:'cb',1004:'f'};
+    return dedupeFoods((d.foods||[]).map(fd=>{ const o={}; (fd.foodNutrients||[]).forEach(n=>{ const key=map[n.nutrientId]; if(key&&o[key]==null)o[key]=n.value; });
+      if(o.k==null||isNaN(o.k))return null; let name=(fd.description||'').trim(); if(fd.brandName)name+=' ('+fd.brandName+')'; if(!name)return null;
+      return {n:name,k:Math.round(o.k),p:+(+o.p||0).toFixed(1),cb:+(+o.cb||0).toFixed(1),f:+(+o.f||0).toFixed(1),src:'🌐 intl'}; })).slice(0,20);
+  }catch(e){ return null; }
+}
 async function searchInternet(){
-  const q=(document.getElementById('fSearch').value||'').trim()||prompt('Buscar produto na internet:');
-  if(!q)return; const box=document.getElementById('results');
-  box.innerHTML='<div class="ritem"><span class="rn" style="color:var(--muted)">🌐 Buscando na internet…</span></div>';
-  try{
-    const url='https://world.openfoodfacts.org/cgi/search.pl?action=process&json=1&page_size=30&sort_by=unique_scans_n&search_terms='+encodeURIComponent(q)+'&fields=product_name,product_name_pt,brands,nutriments';
-    const r=await fetch(url); if(!r.ok) throw new Error('rate'); const d=await r.json(); const seen={};
-    const items=(d.products||[]).map(p=>{ const n=p.nutriments||{}; const k=n['energy-kcal_100g'];
-      if(k==null||isNaN(k))return null; let name=(p.product_name_pt||p.product_name||'').trim(); if(!name)return null;
-      if(p.brands)name+=' ('+p.brands.split(',')[0].trim()+')';
-      return {n:name,k:Math.round(k),p:+(+n.proteins_100g||0).toFixed(1),cb:+(+n.carbohydrates_100g||0).toFixed(1),f:+(+n.fat_100g||0).toFixed(1),c:'Meus alimentos',m:[]}; })
-      .filter(x=>{ if(!x)return false; const key=norm(x.n)+x.k; if(seen[key])return false; seen[key]=1; return true; }).slice(0,20);
-    if(!items.length){ box.innerHTML='<div class="ritem"><span class="rn" style="color:var(--muted)">Nada encontrado na internet para "'+esc(q)+'".</span></div>'; return; }
-    box.innerHTML=''; items.forEach(f=>{ const el=document.createElement('div'); el.className='ritem';
-      el.innerHTML='<div class="rn">'+esc(f.n)+'<div class="rk">🌐 '+f.k+' kcal · P'+f.p+' C'+f.cb+' G'+f.f+' /100g</div></div><div class="rp">＋</div>';
-      el.onclick=()=>{ const cf=store.customFoods(); if(!cf.find(x=>norm(x.n)===norm(f.n))){ cf.push(f); store.saveCustom(cf); } addFoodToCart(f); toast('Adicionado da internet'); };
-      box.appendChild(el); });
-  }catch(e){ box.innerHTML='<div class="ritem"><span class="rn" style="color:var(--muted)">Não consegui buscar agora (sem internet ou muitas buscas seguidas). Tente novamente em alguns segundos.</span></div>'; }
+  const q=(document.getElementById('fSearch').value||'').trim()||prompt('Buscar produto na internet:'); if(!q)return;
+  const box=document.getElementById('results'); box.innerHTML='<div class="ritem"><span class="rn" style="color:var(--muted)">🌐 Buscando na internet…</span></div>';
+  let items=await offSearch(q); if(!items||!items.length) items=await usdaSearch(q);
+  if(!items||!items.length){ box.innerHTML='<div class="ritem"><span class="rn" style="color:var(--muted)">Nada encontrado para "'+esc(q)+'". Tente outro nome (ex: marca) ou aguarde alguns segundos.</span></div>'; return; }
+  box.innerHTML=''; items.forEach(f=>{ const el=document.createElement('div'); el.className='ritem';
+    el.innerHTML='<div class="rn">'+esc(f.n)+'<div class="rk">'+(f.src||'🌐')+' '+f.k+' kcal · P'+f.p+' C'+f.cb+' G'+f.f+' /100g</div></div><div class="rp">＋</div>';
+    el.onclick=()=>{ const food={n:f.n,k:f.k,p:f.p,cb:f.cb,f:f.f,c:'Meus alimentos',m:[]}; const cf=store.customFoods();
+      if(!cf.find(x=>norm(x.n)===norm(food.n))){ cf.push(food); store.saveCustom(cf); } addFoodToCart(food); toast('Adicionado da internet'); };
+    box.appendChild(el); });
 }
 
 function renderCats(){ const cats=[...new Set(allFoods().map(f=>f.c))]; const c=document.getElementById('catRow'); c.innerHTML='';
