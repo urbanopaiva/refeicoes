@@ -266,7 +266,6 @@
     <input type="search" id="fSearch" placeholder="Ex: arroz, frango, banana..." autocomplete="off">
     <div class="catrow" id="catRow"></div>
     <div class="results" id="results"></div>
-    <button class="addlink" id="netBtn">🌐 Buscar na internet (mais alimentos)</button>
     <button class="addlink" id="newFoodBtn">＋ Criar um alimento / produto novo</button>
   </div>
   <div class="cart" id="cart"></div>
@@ -507,6 +506,118 @@ const FOODS=[
  {n:'Whey protein (pó)',k:380,p:75,cb:8,f:5,c:'Suplementos',m:[['scoop',30]]},
  {n:'Barra de proteína',k:350,p:30,cb:40,f:10,c:'Suplementos',m:[['unidade',45]]},
  {n:'Barra de cereal',k:380,p:6,cb:72,f:7,c:'Suplementos',m:[['unidade',25]]},
+ // ===== Ampliação base brasileira (valores de referência TACO/TBCA, por 100 g) =====
+ {n:'Bisnaguinha',k:309,p:8.5,cb:55,f:6,c:'Pães',m:[['unidade',15]]},
+ {n:'Croissant',k:406,p:8.2,cb:46,f:21,c:'Pães',m:[['unidade',60]]},
+ {n:'Pão sírio',k:275,p:9,cb:55,f:1.2,c:'Pães',m:[['unidade',60]]},
+ {n:'Pão doce',k:332,p:8,cb:55,f:8,c:'Pães',m:[['unidade',80]]},
+ {n:'Panqueca (massa)',k:227,p:6,cb:28,f:10,c:'Pães',m:[['unidade',40]]},
+ {n:'Panetone',k:363,p:6.6,cb:61,f:10,c:'Pães',m:[['fatia',80]]},
+ {n:'Bolo simples',k:310,p:6,cb:50,f:9,c:'Doces',m:[['fatia',60]]},
+ {n:'Farinha de trigo',k:360,p:9.8,cb:75,f:1.4,c:'Cereais',m:[['colher de sopa',15]]},
+ {n:'Farinha de mandioca',k:361,p:1.6,cb:82,f:0.3,c:'Cereais',m:[['colher de sopa',15]]},
+ {n:'Amido de milho (maisena)',k:361,p:0.6,cb:87,f:0.1,c:'Cereais',m:[['colher de sopa',10]]},
+ {n:'Mingau de aveia',k:90,p:3.5,cb:13,f:2.5,c:'Cereais',m:[['concha',150]]},
+ {n:'Inhame cozido',k:97,p:2.1,cb:23,f:0.2,c:'Acompanhamentos',m:[['pedaço',100]]},
+ {n:'Cará cozido',k:108,p:1.5,cb:25,f:0.2,c:'Acompanhamentos',m:[['pedaço',100]]},
+ {n:'Mandioquinha (batata baroa) cozida',k:80,p:1,cb:19,f:0.2,c:'Acompanhamentos',m:[['unidade',60]]},
+ {n:'Baião de dois',k:137,p:6,cb:20,f:3.5,c:'Acompanhamentos',m:[['concha',120]]},
+ {n:'Arroz carreteiro',k:160,p:8,cb:18,f:6,c:'Acompanhamentos',m:[['concha',150]]},
+ {n:'Escondidinho de carne',k:150,p:8,cb:12,f:8,c:'Acompanhamentos',m:[['porção',200]]},
+ {n:'Farofa de ovo',k:400,p:6,cb:55,f:17,c:'Acompanhamentos',m:[['colher de sopa',20]]},
+ {n:'Espaguete à bolonhesa',k:155,p:7,cb:22,f:4,c:'Massas',m:[['pegador',120]]},
+ {n:'Talharim ao sugo',k:150,p:5,cb:27,f:2,c:'Massas',m:[['pegador',90]]},
+ {n:'Contrafilé grelhado',k:278,p:32,cb:0,f:16,c:'Carnes',m:[['bife',100]]},
+ {n:'Fraldinha grelhada',k:234,p:27,cb:0,f:14,c:'Carnes',m:[['fatia',100]]},
+ {n:'Maminha assada',k:220,p:30,cb:0,f:11,c:'Carnes',m:[['fatia',100]]},
+ {n:'Cupim assado',k:330,p:24,cb:0,f:26,c:'Carnes',m:[['fatia',100]]},
+ {n:'Músculo cozido',k:190,p:28,cb:0,f:8,c:'Carnes',m:[['porção',100]]},
+ {n:'Fígado bovino grelhado',k:225,p:29,cb:3.8,f:9,c:'Carnes',m:[['bife',100]]},
+ {n:'Almôndega',k:200,p:14,cb:8,f:12,c:'Carnes',m:[['unidade',30]]},
+ {n:'Carne seca (charque) cozida',k:313,p:30,cb:0,f:21,c:'Carnes',m:[['porção',60]]},
+ {n:'Carne de sol',k:290,p:28,cb:0,f:19,c:'Carnes',m:[['porção',100]]},
+ {n:'Kibe frito',k:250,p:12,cb:20,f:13,c:'Carnes',m:[['unidade',60]]},
+ {n:'Salsicha',k:257,p:13,cb:2.6,f:22,c:'Carnes',m:[['unidade',50]]},
+ {n:'Mortadela',k:300,p:12,cb:4,f:26,c:'Carnes',m:[['fatia',15]]},
+ {n:'Presunto',k:94,p:14,cb:1.6,f:3.4,c:'Carnes',m:[['fatia',15]]},
+ {n:'Salame',k:398,p:25,cb:1.5,f:32,c:'Carnes',m:[['fatia',8]]},
+ {n:'Frango assado (com pele)',k:220,p:27,cb:0,f:12,c:'Aves',m:[['porção',100]]},
+ {n:'Asa de frango frita',k:270,p:22,cb:0,f:20,c:'Aves',m:[['unidade',40]]},
+ {n:'Ovo de codorna',k:177,p:13,cb:0.8,f:14,c:'Ovos',m:[['unidade',10]]},
+ {n:'Merluza cozida',k:90,p:19,cb:0,f:1.5,c:'Peixes',m:[['filé',100]]},
+ {n:'Pescada frita',k:200,p:24,cb:3,f:10,c:'Peixes',m:[['filé',100]]},
+ {n:'Lula à dorê',k:175,p:12,cb:12,f:8,c:'Peixes',m:[['porção',100]]},
+ {n:'Polvo cozido',k:82,p:15,cb:2,f:1,c:'Peixes',m:[['porção',100]]},
+ {n:'Ricota',k:140,p:12,cb:3.8,f:8,c:'Laticínios',m:[['fatia',30]]},
+ {n:'Queijo coalho',k:320,p:24,cb:2,f:24,c:'Laticínios',m:[['espeto',60]]},
+ {n:'Petit suisse (danoninho)',k:100,p:4,cb:16,f:2,c:'Laticínios',m:[['unidade',45]]},
+ {n:'Leite fermentado (tipo Yakult)',k:71,p:1.2,cb:16,f:0,c:'Laticínios',m:[['frasco',80]]},
+ {n:'Iogurte com frutas',k:85,p:3,cb:14,f:1.5,c:'Laticínios',m:[['pote',100]]},
+ {n:'Leite de soja',k:54,p:3.4,cb:5,f:1.9,c:'Laticínios',m:[['copo',200]]},
+ {n:'Leite em pó integral',k:497,p:25,cb:38,f:27,c:'Laticínios',m:[['colher de sopa',15]]},
+ {n:'Feijão branco cozido',k:90,p:6,cb:16,f:0.6,c:'Leguminosas',m:[['concha',100]]},
+ {n:'Feijão fradinho cozido',k:78,p:5,cb:14,f:0.5,c:'Leguminosas',m:[['concha',100]]},
+ {n:'Homus',k:177,p:8,cb:20,f:8,c:'Leguminosas',m:[['colher de sopa',25]]},
+ {n:'Acerola',k:33,p:0.9,cb:8,f:0.2,c:'Frutas',m:[['unidade',8]]},
+ {n:'Caju (fruta)',k:43,p:1,cb:10,f:0.3,c:'Frutas',m:[['unidade',30]]},
+ {n:'Caqui',k:71,p:0.4,cb:19,f:0.1,c:'Frutas',m:[['unidade',100]]},
+ {n:'Figo',k:74,p:0.8,cb:19,f:0.3,c:'Frutas',m:[['unidade',50]]},
+ {n:'Jaca',k:88,p:1.4,cb:23,f:0.3,c:'Frutas',m:[['bago',30]]},
+ {n:'Graviola',k:62,p:1,cb:15,f:0.3,c:'Frutas',m:[['fatia',100]]},
+ {n:'Pinha (fruta-do-conde)',k:88,p:1.5,cb:22,f:0.3,c:'Frutas',m:[['unidade',150]]},
+ {n:'Pêssego',k:39,p:0.9,cb:10,f:0.2,c:'Frutas',m:[['unidade',90]]},
+ {n:'Carambola',k:46,p:0.9,cb:10,f:0.3,c:'Frutas',m:[['unidade',90]]},
+ {n:'Mirtilo (blueberry)',k:57,p:0.7,cb:14,f:0.3,c:'Frutas',m:[['punhado',50]]},
+ {n:'Romã',k:83,p:1.7,cb:19,f:1.2,c:'Frutas',m:[['unidade',150]]},
+ {n:'Uva passa',k:299,p:3.1,cb:79,f:0.5,c:'Frutas',m:[['colher de sopa',15]]},
+ {n:'Ameixa seca',k:240,p:2.2,cb:64,f:0.4,c:'Frutas',m:[['unidade',8]]},
+ {n:'Coco ralado',k:406,p:3.5,cb:15,f:36,c:'Frutas',m:[['colher de sopa',8]]},
+ {n:'Banana-da-terra cozida',k:116,p:1,cb:30,f:0.2,c:'Frutas',m:[['unidade',100]]},
+ {n:'Rúcula',k:25,p:2.6,cb:3.7,f:0.7,c:'Verduras',m:[['prato',40]]},
+ {n:'Agrião',k:17,p:2.3,cb:2.3,f:0.2,c:'Verduras',m:[['prato',40]]},
+ {n:'Acelga',k:20,p:1.5,cb:4,f:0.2,c:'Verduras',m:[['folha',30]]},
+ {n:'Couve-flor cozida',k:23,p:1.9,cb:4.5,f:0.2,c:'Verduras',m:[['ramo',60]]},
+ {n:'Chuchu cozido',k:19,p:0.7,cb:4.5,f:0.1,c:'Verduras',m:[['colher de sopa',30]]},
+ {n:'Quiabo cozido',k:33,p:1.9,cb:7,f:0.2,c:'Verduras',m:[['colher de sopa',25]]},
+ {n:'Jiló',k:42,p:1.5,cb:9,f:0.2,c:'Verduras',m:[['unidade',30]]},
+ {n:'Palmito',k:27,p:2.5,cb:4.3,f:0.6,c:'Verduras',m:[['colher de sopa',30]]},
+ {n:'Champignon (cogumelo)',k:22,p:3.1,cb:3.3,f:0.3,c:'Verduras',m:[['colher de sopa',20]]},
+ {n:'Azeitona',k:135,p:1,cb:6,f:12,c:'Verduras',m:[['unidade',4]]},
+ {n:'Batata palha',k:560,p:5,cb:50,f:37,c:'Acompanhamentos',m:[['colher de sopa',10]]},
+ {n:'Tomate seco',k:258,p:5,cb:20,f:18,c:'Verduras',m:[['colher de sopa',15]]},
+ {n:'Suco de maracujá',k:42,p:0.4,cb:10,f:0.1,c:'Bebidas',m:[['copo',200]]},
+ {n:'Caipirinha',k:160,p:0,cb:12,f:0,c:'Bebidas',m:[['copo',200]]},
+ {n:'Destilados (cachaça, vodka)',k:231,p:0,cb:0,f:0,c:'Bebidas',m:[['dose',50]]},
+ {n:'Chá mate (com açúcar)',k:30,p:0,cb:8,f:0,c:'Bebidas',m:[['copo',200]]},
+ {n:'Cappuccino',k:60,p:2,cb:9,f:2,c:'Bebidas',m:[['xícara',150]]},
+ {n:'Leite de amêndoas',k:24,p:0.5,cb:3,f:1.1,c:'Bebidas',m:[['copo',200]]},
+ {n:'Isotônico (tipo Gatorade)',k:24,p:0,cb:6,f:0,c:'Bebidas',m:[['copo',200]]},
+ {n:'Creme de avelã (tipo Nutella)',k:539,p:6.3,cb:57.5,f:30.9,c:'Doces',m:[['colher de sopa',20]]},
+ {n:'Goiabada',k:270,p:0.5,cb:68,f:0.1,c:'Doces',m:[['fatia',30]]},
+ {n:'Cocada',k:428,p:3,cb:60,f:20,c:'Doces',m:[['unidade',30]]},
+ {n:'Quindim',k:320,p:6,cb:45,f:13,c:'Doces',m:[['unidade',40]]},
+ {n:'Rapadura',k:352,p:0.6,cb:90,f:0.1,c:'Doces',m:[['pedaço',20]]},
+ {n:'Pé de moleque',k:480,p:12,cb:55,f:24,c:'Doces',m:[['unidade',25]]},
+ {n:'Chocolate meio amargo',k:480,p:6,cb:60,f:31,c:'Doces',m:[['quadradinho',6]]},
+ {n:'Chocolate branco',k:539,p:6,cb:59,f:32,c:'Doces',m:[['quadradinho',6]]},
+ {n:'Achocolatado em pó',k:394,p:4,cb:88,f:2,c:'Doces',m:[['colher de sopa',15]]},
+ {n:'Bombom',k:460,p:5,cb:60,f:22,c:'Doces',m:[['unidade',15]]},
+ {n:'Picolé de fruta',k:90,p:0.3,cb:22,f:0.1,c:'Doces',m:[['unidade',60]]},
+ {n:'Bala/caramelo',k:390,p:0,cb:97,f:0,c:'Doces',m:[['unidade',5]]},
+ {n:'Açúcar mascavo',k:369,p:0,cb:95,f:0,c:'Doces',m:[['colher de sopa',12]]},
+ {n:'Empada de frango',k:320,p:7,cb:30,f:19,c:'Lanches',m:[['unidade',50]]},
+ {n:'Enroladinho de salsicha',k:300,p:9,cb:28,f:17,c:'Lanches',m:[['unidade',40]]},
+ {n:'Quiche',k:280,p:9,cb:20,f:18,c:'Lanches',m:[['fatia',100]]},
+ {n:'Empadão',k:270,p:8,cb:26,f:15,c:'Lanches',m:[['fatia',120]]},
+ {n:'Torta de frango',k:250,p:9,cb:24,f:13,c:'Lanches',m:[['fatia',100]]},
+ {n:'Bauru',k:250,p:14,cb:22,f:11,c:'Lanches',m:[['unidade',180]]},
+ {n:'Sanduíche natural',k:180,p:9,cb:22,f:6,c:'Lanches',m:[['unidade',120]]},
+ {n:'Croquete de carne',k:280,p:12,cb:22,f:15,c:'Lanches',m:[['unidade',30]]},
+ {n:'Açaí na tigela (com banana e granola)',k:150,p:2,cb:28,f:4,c:'Lanches',m:[['porção',200]]},
+ {n:'Albumina',k:380,p:80,cb:4,f:1,c:'Suplementos',m:[['colher de sopa',15]]},
+ {n:'Hipercalórico (massa)',k:380,p:15,cb:75,f:3,c:'Suplementos',m:[['porção',100]]},
+ {n:'Banha de porco',k:900,p:0,cb:0,f:100,c:'Óleos',m:[['colher de sopa',12]]},
+ {n:'Molho branco',k:120,p:3,cb:8,f:8,c:'Molhos',m:[['concha',60]]},
 ];
 
 const TYPES=[
@@ -882,39 +993,6 @@ function measuresOf(food){ const base=(food.m||[]).map(x=>({l:x[0],g:x[1]}));
   if(!base.some(x=>x.g===100)) base.push({l:'100 g',g:100});
   if(!base.some(x=>x.g===1)) base.push({l:'grama (g)',g:1}); return base; }
 
-async function fetchJSON(u){ const r=await fetch(u); if(!r.ok) throw new Error(r.status); return r.json(); }
-function dedupeFoods(arr){ const seen={}; return arr.filter(x=>{ if(!x)return false; const key=norm(x.n)+'|'+x.k; if(seen[key])return false; seen[key]=1; return true; }); }
-async function offSearch(q){
-  for(const host of ['world','br']){
-    try{ const d=await fetchJSON('https://'+host+'.openfoodfacts.org/cgi/search.pl?action=process&json=1&page_size=30&sort_by=unique_scans_n&search_terms='+encodeURIComponent(q)+'&fields=product_name,product_name_pt,brands,nutriments');
-      const items=dedupeFoods((d.products||[]).map(p=>{ const n=p.nutriments||{}; const k=n['energy-kcal_100g']; if(k==null||isNaN(k))return null;
-        let name=(p.product_name_pt||p.product_name||'').trim(); if(!name)return null; if(p.brands)name+=' ('+p.brands.split(',')[0].trim()+')';
-        return {n:name,k:Math.round(k),p:+(+n.proteins_100g||0).toFixed(1),cb:+(+n.carbohydrates_100g||0).toFixed(1),f:+(+n.fat_100g||0).toFixed(1),src:'🌐'}; })).slice(0,20);
-      if(items.length) return items;
-    }catch(e){}
-  }
-  return null;
-}
-async function usdaSearch(q){
-  try{ const d=await fetchJSON('https://api.nal.usda.gov/fdc/v1/foods/search?query='+encodeURIComponent(q)+'&pageSize=20&dataType=Foundation,SR%20Legacy,Branded&api_key=DEMO_KEY');
-    const map={1008:'k',1003:'p',1005:'cb',1004:'f'};
-    return dedupeFoods((d.foods||[]).map(fd=>{ const o={}; (fd.foodNutrients||[]).forEach(n=>{ const key=map[n.nutrientId]; if(key&&o[key]==null)o[key]=n.value; });
-      if(o.k==null||isNaN(o.k))return null; let name=(fd.description||'').trim(); if(fd.brandName)name+=' ('+fd.brandName+')'; if(!name)return null;
-      return {n:name,k:Math.round(o.k),p:+(+o.p||0).toFixed(1),cb:+(+o.cb||0).toFixed(1),f:+(+o.f||0).toFixed(1),src:'🌐 intl'}; })).slice(0,20);
-  }catch(e){ return null; }
-}
-async function searchInternet(){
-  const q=(document.getElementById('fSearch').value||'').trim()||prompt('Buscar produto na internet:'); if(!q)return;
-  const box=document.getElementById('results'); box.innerHTML='<div class="ritem"><span class="rn" style="color:var(--muted)">🌐 Buscando na internet…</span></div>';
-  let items=await offSearch(q); if(!items||!items.length) items=await usdaSearch(q);
-  if(!items||!items.length){ box.innerHTML='<div class="ritem"><span class="rn" style="color:var(--muted)">Nada encontrado para "'+esc(q)+'". Tente outro nome (ex: marca) ou aguarde alguns segundos.</span></div>'; return; }
-  box.innerHTML=''; items.forEach(f=>{ const el=document.createElement('div'); el.className='ritem';
-    el.innerHTML='<div class="rn">'+esc(f.n)+'<div class="rk">'+(f.src||'🌐')+' '+f.k+' kcal · P'+f.p+' C'+f.cb+' G'+f.f+' /100g</div></div><div class="rp">＋</div>';
-    el.onclick=()=>{ const food={n:f.n,k:f.k,p:f.p,cb:f.cb,f:f.f,c:'Meus alimentos',m:[]}; const cf=store.customFoods();
-      if(!cf.find(x=>norm(x.n)===norm(food.n))){ cf.push(food); store.saveCustom(cf); } addFoodToCart(food); toast('Adicionado da internet'); };
-    box.appendChild(el); });
-}
-
 function renderCats(){ const cats=[...new Set(allFoods().map(f=>f.c))]; const c=document.getElementById('catRow'); c.innerHTML='';
   const all=document.createElement('div'); all.className='ct'+(curCat===''?' sel':''); all.textContent='Todos'; all.onclick=()=>{ curCat=''; renderResults(); }; c.appendChild(all);
   cats.forEach(cat=>{ const b=document.createElement('div'); b.className='ct'+(curCat===cat?' sel':''); b.textContent=cat; b.onclick=()=>{ curCat=cat; renderResults(); }; c.appendChild(b); }); }
@@ -1131,7 +1209,6 @@ document.getElementById('scrim5').onclick=closeSaveRecipe;
 document.getElementById('x5').onclick=closeSaveRecipe;
 document.getElementById('rcSave').onclick=saveRecipe;
 document.getElementById('rcYield').oninput=rcUpdate;
-document.getElementById('netBtn').onclick=searchInternet;
 
 /* Arrastar a folha para baixo para fechar */
 function attachDrag(sheet,closeFn){
